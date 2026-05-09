@@ -7,7 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Architectural design - HM&AD">
+    <meta name="apple-mobile-web-app-title" content="HM&AD Architectural Design">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#e8491d">
     <style>
@@ -363,7 +363,6 @@
                 <button class="lang-btn active" data-lang="ru">RU</button>
                 <button class="lang-btn" data-lang="en">EN</button>
             </div>
-            <!-- Кнопки навигации с пустыми текстами, заполняются скриптом -->
             <button class="nav-btn" data-nav="plan" id="navPlanBtn"></button>
             <button class="nav-btn" data-nav="objects" id="navObjectsBtn"></button>
             <button class="nav-btn" data-nav="furniture" id="navFurnitureBtn"></button>
@@ -382,7 +381,6 @@
         </div>
     </div>
 
-    <!-- РУССКАЯ ВЕРСИЯ -->
     <div id="ru-content" class="lang-content active">
         <div class="hero">
             <h1>HM&AD — Архитектурный дизайн</h1>
@@ -435,7 +433,6 @@
         <footer><span>© 2025 HM&AD | Архитектурный дизайн и планировка</span></footer>
     </div>
 
-    <!-- АНГЛИЙСКАЯ ВЕРСИЯ -->
     <div id="en-content" class="lang-content">
         <div class="hero">
             <h1>HM&AD — Architectural Design</h1>
@@ -490,13 +487,11 @@
 </div>
 
 <script>
-    // Тексты для навигационных кнопок
     const navTexts = {
         ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' },
         en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' }
     };
     
-    // ФОНЫ
     const backgrounds = ['bg1.jpg', 'bg2.jpg'];
     const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
     document.getElementById('bgLayer').style.backgroundImage = `url(${randomBg})`;
