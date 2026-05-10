@@ -4,7 +4,7 @@ const base = (() => {
   return path.join('/') + '/';
 })();
 
-const CACHE_NAME = 'hmad-pwa-v2';
+const CACHE_NAME = 'hmad-v2';
 const urlsToCache = [
   base,
   base + 'index.html',
