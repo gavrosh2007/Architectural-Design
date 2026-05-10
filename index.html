@@ -1089,37 +1089,27 @@
         drawBoth();
     });
     
+    // ========== РАБОТАЮЩАЯ КНОПКА PWA (скопирована из HM&SA) ==========
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        console.log('beforeinstallprompt пойман');
     });
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        const installBtn = document.getElementById('pwa-install-icon');
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log('User choice:', outcome);
-                    deferredPrompt = null;
-                } else {
-                    alert(currentLang === 'ru' 
-                        ? 'Для установки: Chrome/Edge — ⋮ → Установить приложение, iPhone — Поделиться → На экран "Домой"'
-                        : 'To install: Chrome/Edge — ⋮ → Install app, iPhone — Share → Add to Home Screen');
-                }
-            });
+    document.getElementById('pwa-install-icon').addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            deferredPrompt = null;
         } else {
-            console.error('Кнопка установки не найдена');
+            alert(currentLang === 'ru' 
+                ? 'Для установки: Chrome/Edge — значок ⬇️ в адресной строке, iPhone — Поделиться → На экран "Домой"'
+                : 'To install: Chrome/Edge — icon ⬇️, iPhone — Share → Add to Home Screen');
         }
     });
+    // ========== КОНЕЦ БЛОКА PWA ==========
     
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js', { scope: './' })
-            .then(reg => console.log('SW registered', reg))
-            .catch(err => console.warn('SW error:', err));
+        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(err => console.warn('SW error:', err));
     }
     
     updateCanvasDimensions();

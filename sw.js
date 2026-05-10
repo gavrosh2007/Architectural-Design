@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmad-v6';
+const CACHE_NAME = 'hmad-v1';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -18,15 +18,7 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then(response => {
-        if (response) return response;
-        return fetch(event.request).catch(() => {
-          if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
-          }
-          return new Response('Offline', { status: 503 });
-        });
-      })
+      .then(response => response || fetch(event.request))
   );
 });
 
