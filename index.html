@@ -7,7 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="HM&AD architectural design">
+    <meta name="apple-mobile-web-app-title" content="HM&AD">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#e8491d">
     <style>
@@ -1090,7 +1090,6 @@
         drawBoth();
     });
     
-    // ========== PWA МЕХАНИЗМ ИЗ ЭТАЛОНА (НЕ ТРОГАТЬ) ==========
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -1114,7 +1113,6 @@
             .then(reg => console.log('SW registered'))
             .catch(err => console.error('SW failed', err));
     }
-    // ========== КОНЕЦ PWA МЕХАНИЗМА ==========
     
     updateCanvasDimensions();
     setupButtons();
