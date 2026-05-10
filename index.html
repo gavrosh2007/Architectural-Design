@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>HM&AD architectural design</title>
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="HM&AD">
@@ -374,7 +374,7 @@
     <div class="install-area">
         <div class="install-tooltip">
             <button id="pwa-install-icon" class="pwa-icon-btn">
-                <img src="icon-192x192.png" width="96" height="96" alt="Иконка приложения">
+                <img src="/icon-192x192.png" width="96" height="96" alt="Иконка приложения">
                 <span id="pwaBtnText">Установить приложение</span>
             </button>
             <span class="tooltip-text" id="pwaTooltip">💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».</span>
@@ -1089,7 +1089,6 @@
         drawBoth();
     });
     
-    // ========== РАБОТАЮЩАЯ КНОПКА PWA (скопирована из HM&SA) ==========
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -1106,10 +1105,9 @@
                 : 'To install: Chrome/Edge — icon ⬇️, iPhone — Share → Add to Home Screen');
         }
     });
-    // ========== КОНЕЦ БЛОКА PWA ==========
     
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(err => console.warn('SW error:', err));
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(err => console.warn('SW error:', err));
     }
     
     updateCanvasDimensions();
