@@ -125,6 +125,10 @@
             font-size: 0.9rem;
             font-weight: 600;
             color: #e8491d;
+            transition: transform 0.05s;
+        }
+        .pwa-icon-btn:active {
+            transform: scale(0.97);
         }
         
         .pwa-icon-btn img {
@@ -1089,7 +1093,7 @@
         drawBoth();
     });
     
-    // ========== PWA УСТАНОВКА (исправлено по эталону) ==========
+    // ========== ИСПРАВЛЕННЫЙ PWA БЛОК (как в эталоне HM&SA) ==========
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -1109,7 +1113,7 @@
                 : 'To install: Chrome/Edge — icon ⬇️, iPhone — Share → Add to Home Screen');
         }
     });
-    // ========== КОНЕЦ БЛОКА PWA ==========
+    // ================================================================
     
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js', { scope: './' })
