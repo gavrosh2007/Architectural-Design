@@ -1,10 +1,17 @@
-const CACHE_NAME = 'hmad-v1';
+const base = (() => {
+  const path = self.location.pathname.split('/');
+  path.pop();
+  return path.join('/') + '/';
+})();
+
+const CACHE_NAME = 'hmad-v5';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192x192.png',
-  '/icon-512x512.png'
+  base,
+  base + 'index.html',
+  base + 'offline.html',
+  base + 'manifest.json',
+  base + 'icon-192x192.png',
+  base + 'icon-512x512.png'
 ];
 
 self.addEventListener('install', event => {
@@ -18,7 +25,15 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then(response => response || fetch(event.request))
+      .then(response => {
+        if (response) return response;
+        return fetch(event.request).catch(() => {
+          if (event.request.mode === 'navigate') {
+            return caches.match(base + 'offline.html');
+          }
+          return new Response('Offline', { status: 503 });
+        });
+      })
   );
 });
 

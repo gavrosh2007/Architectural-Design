@@ -1089,16 +1089,19 @@
         drawBoth();
     });
     
-    // ========== РАБОТАЮЩАЯ КНОПКА PWA (скопирована из HM&SA) ==========
+    // ========== PWA УСТАНОВКА (исправлено по эталону) ==========
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
+        console.log('beforeinstallprompt сработал');
     });
+    
     document.getElementById('pwa-install-icon').addEventListener('click', async () => {
         if (deferredPrompt) {
             deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User ${outcome}`);
             deferredPrompt = null;
         } else {
             alert(currentLang === 'ru' 
@@ -1109,7 +1112,9 @@
     // ========== КОНЕЦ БЛОКА PWA ==========
     
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(err => console.warn('SW error:', err));
+        navigator.serviceWorker.register('sw.js', { scope: './' })
+            .then(reg => console.log('SW registered', reg))
+            .catch(err => console.error('SW error:', err));
     }
     
     updateCanvasDimensions();
