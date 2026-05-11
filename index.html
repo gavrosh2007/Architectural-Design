@@ -377,7 +377,7 @@
 
     <div class="install-area">
         <div class="install-tooltip">
-            <button id="pwa-install-icon" class="pwa-icon-btn">
+            <button id="pwaInstallIcon" class="pwa-icon-btn">
                 <img src="icon-192x192.png" width="96" height="96" alt="Иконка приложения">
                 <span id="pwaBtnText">Установить приложение</span>
             </button>
@@ -1093,27 +1093,24 @@
         drawBoth();
     });
     
-    // ========== ИСПРАВЛЕННЫЙ PWA БЛОК (как в эталоне HM&SA) ==========
+    // ========== PWA УСТАНОВКА (ТОЧНО КАК В ЭТАЛОНЕ HM&SA) ==========
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        console.log('beforeinstallprompt сработал');
     });
     
-    document.getElementById('pwa-install-icon').addEventListener('click', async () => {
+    document.getElementById('pwaInstallIcon').addEventListener('click', async () => {
         if (deferredPrompt) {
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User ${outcome}`);
+            console.log(`Установка: ${outcome}`);
             deferredPrompt = null;
         } else {
-            alert(currentLang === 'ru' 
-                ? 'Для установки: Chrome/Edge — значок ⬇️ в адресной строке, iPhone — Поделиться → На экран "Домой"'
-                : 'To install: Chrome/Edge — icon ⬇️, iPhone — Share → Add to Home Screen');
+            alert('Для установки: Chrome/Edge — значок ⬇️ в адресной строке, iPhone — Поделиться → На экран "Домой"');
         }
     });
-    // ================================================================
+    // ==============================================================
     
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js', { scope: './' })
