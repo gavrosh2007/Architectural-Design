@@ -491,6 +491,7 @@
 </div>
 
 <script>
+    // ========== ВСЯ ЛОГИКА ПЛАНИРОВКИ HM&AD (СОХРАНЕНА) ==========
     const navTexts = {
         ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' },
         en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' }
@@ -1093,7 +1094,7 @@
         drawBoth();
     });
     
-    // ========== PWA УСТАНОВКА (ТОЧНО КАК В ЭТАЛОНЕ HM&SA) ==========
+    // ========== MЕХАНИЗМ PWA (ТОЧНАЯ КОПИЯ ИЗ ЭТАЛОНА HM&SA) ==========
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -1103,14 +1104,13 @@
     document.getElementById('pwaInstallIcon').addEventListener('click', async () => {
         if (deferredPrompt) {
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Установка: ${outcome}`);
+            await deferredPrompt.userChoice;
             deferredPrompt = null;
         } else {
-            alert('Для установки: Chrome/Edge — значок ⬇️ в адресной строке, iPhone — Поделиться → На экран "Домой"');
+            // Молча игнорируем — никаких алертов, чтобы не блокировать
         }
     });
-    // ==============================================================
+    // =================================================================
     
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js', { scope: './' })
