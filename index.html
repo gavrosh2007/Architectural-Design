@@ -25,11 +25,44 @@
         .lang-btn { background: rgba(0,0,0,0.5); border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 30px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
         .lang-btn.active { background: #e8491d; }
         .install-area { text-align: center; margin: 1rem 0 2rem; }
-        .pwa-icon-btn { background: none; border: none; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; gap: 0.3rem; font-size: 0.9rem; font-weight: 600; color: #e8491d; transition: transform 0.05s; position: relative; }
+        .pwa-icon-btn {
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #e8491d;
+            transition: transform 0.05s;
+        }
         .pwa-icon-btn:active { transform: scale(0.97); }
         .pwa-icon-btn img { width: 96px; height: 96px; border-radius: 12px; }
-        .tooltip-text { visibility: hidden; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 5px 10px; position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 0.75rem; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 20; }
-        .pwa-icon-btn:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .tooltip-text {
+            visibility: hidden;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 20;
+        }
+        .pwa-icon-btn:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
         .hero { background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); border-radius: 32px; padding: 2rem; text-align: center; margin-bottom: 2rem; }
         .hero h1 { font-size: 2.5rem; color: #e8491d; text-shadow: 1px 1px 0 rgba(255,255,255,0.8); }
         .hero p { color: #1a1a1a; font-size: 1.2rem; margin-top: 0.5rem; }
@@ -83,22 +116,8 @@
         </button>
     </div>
     <div id="ru-content" class="lang-content active">
-        <div class="hero">
-            <h1>HM&AD — Архитектурный дизайн</h1>
-            <p>Расставьте объекты на плане — дизайнер всё поймёт</p>
-        </div>
-        <div id="plan" class="plan-area">
-            <div class="canvas-container">
-                <canvas id="planCanvas" width="900" height="600"></canvas>
-            </div>
-            <div class="button-group">
-                <button class="btn" id="cameraBtn">📷 Снять план</button>
-                <button class="btn" id="loadBtn">📁 Загрузить план</button>
-                <button class="btn" id="calibrateDoorBtn" style="background:#2a6a4a">🚪 Калибровать дверь</button>
-                <button class="btn" id="resetObjBtn">🗑️ Очистить всё</button>
-            </div>
-            <div id="calibStatus" class="instruction">🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма</div>
-        </div>
+        <div class="hero"><h1>HM&AD — Архитектурный дизайн</h1><p>Расставьте объекты на плане — дизайнер всё поймёт</p></div>
+        <div id="plan" class="plan-area"><div class="canvas-container"><canvas id="planCanvas" width="900" height="600"></canvas></div><div class="button-group"><button class="btn" id="cameraBtn">📷 Снять план</button><button class="btn" id="loadBtn">📁 Загрузить план</button><button class="btn" id="calibrateDoorBtn" style="background:#2a6a4a">🚪 Калибровать дверь</button><button class="btn" id="resetObjBtn">🗑️ Очистить всё</button></div><div id="calibStatus" class="instruction">🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма</div></div>
         <div id="objects"><h2 class="section-title">📦 Объекты для расстановки</h2><div class="cards-grid" id="objectsGridRu"></div></div>
         <div id="furniture" class="form-card"><h3 style="color:#e8491d; margin-bottom:1rem;">🛋️ Что нужно купить/заменить?</h3><div class="checkbox-group" id="furnitureChecklistRu"></div><div class="form-group"><textarea id="furnitureWishRu" rows="2" placeholder="Дополнительные пожелания по мебели..."></textarea></div></div>
         <div id="electric" class="form-card"><h3 style="color:#e8491d; margin-bottom:1rem;">⚡ Электротехника</h3><div class="checkbox-group" id="electricLevelsRu"></div><div class="form-group"><textarea id="electricWishRu" rows="3" placeholder="Розетки, свет, тёплый пол, интернет..."></textarea></div></div>
