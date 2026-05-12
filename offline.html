@@ -25,7 +25,6 @@
         .lang-btn { background: rgba(0,0,0,0.5); border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 30px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
         .lang-btn.active { background: #e8491d; }
         .install-area { text-align: center; margin: 1rem 0 2rem; }
-        .install-tooltip { position: relative; display: inline-block; }
         .pwa-icon-btn { background: none; border: none; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; gap: 0.3rem; font-size: 0.9rem; font-weight: 600; color: #e8491d; transition: transform 0.05s; position: relative; }
         .pwa-icon-btn:active { transform: scale(0.97); }
         .pwa-icon-btn img { width: 96px; height: 96px; border-radius: 12px; }
@@ -192,7 +191,6 @@
 </div>
 
 <script>
-    // ===== ВАША ПОЛНАЯ ЛОГИКА ПЛАНИРОВКИ =====
     const navTexts = {
         ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' },
         en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' }
@@ -795,7 +793,6 @@
         drawBoth();
     });
     
-    // ========== PWA БЛОК ==========
     let deferredPrompt;
     
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -816,7 +813,6 @@
             .then(reg => console.log('SW registered'))
             .catch(err => console.error('SW error', err));
     }
-    // =====================================================================
     
     updateCanvasDimensions();
     setupButtons();
