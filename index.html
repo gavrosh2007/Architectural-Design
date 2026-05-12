@@ -89,7 +89,6 @@
         .lang-content { display: none; }
         .lang-content.active { display: block; }
         @media (max-width: 700px) { .container { padding: 1rem; } .hero h1 { font-size: 1.8rem; } .section-title { font-size: 1.4rem; } .nav-btn { font-size: 0.8rem; padding: 0.3rem 0.8rem; } .pwa-icon-btn img { width: 64px; height: 64px; } }
-        @media (display-mode: standalone) { .install-area { display: none; } }
     </style>
 </head>
 <body>
@@ -196,46 +195,30 @@
     document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
     window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
     
-    // ========== PWA УСТАНОВКА - ДИАЛОГ ВЫЗЫВАЕТСЯ ==========
-    let installPromptEvent = null;
+    // ПРЯМАЯ КОМАНДА НА УСТАНОВКУ PWA
+    let deferredPrompt;
     
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
-        installPromptEvent = e;
-        console.log('✅ beforeinstallprompt перехвачен, установка доступна');
+        deferredPrompt = e;
     });
     
-    const installButton = document.getElementById('pwaInstallIcon');
-    if (installButton) {
-        installButton.addEventListener('click', async () => {
-            if (installPromptEvent) {
-                // ВЫЗЫВАЕМ ДИАЛОГ УСТАНОВКИ
-                installPromptEvent.prompt();
-                const result = await installPromptEvent.userChoice;
-                console.log(`Результат установки: ${result.outcome}`);
-                if (result.outcome === 'accepted') {
-                    console.log('Пользователь установил приложение');
-                }
-                installPromptEvent = null;
+    document.getElementById('pwaInstallIcon').addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            deferredPrompt = null;
+        } else {
+            // ИНСТРУКЦИЯ ТОЛЬКО КОГДА УСТАНОВКА НЕВОЗМОЖНА
+            if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+                alert('Нажмите Поделиться → На экран "Домой"');
             } else {
-                // Если диалог недоступен - показываем инструкцию (iOS, уже установлено, etc)
-                const msg = currentLang === 'ru' 
-                    ? '📱 Установка: Chrome/Edge — ⋮ → "Установить приложение". На iPhone: Поделиться → "На экран Домой"'
-                    : '📱 Install: Chrome/Edge — ⋮ → "Install app". On iPhone: Share → "Add to Home Screen"';
-                alert(msg);
+                alert('Нажмите ⋮ → Установить приложение');
             }
-        });
-    }
+        }
+    });
     
-    // Регистрация Service Worker
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').then(reg => {
-            console.log('SW registered:', reg);
-        }).catch(err => {
-            console.error('SW error:', err);
-        });
-    }
-    
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(reg => console.log('SW registered', reg)).catch(err => console.error('SW error', err));
     updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();
 </script>
 </body>
