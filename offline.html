@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>HM&AD architectural design</title>
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="HM&AD">
@@ -193,7 +194,7 @@
 </div>
 
 <script>
-    // ===== ВАША ПОЛНАЯ ЛОГИКА ПЛАНИРОВКИ =====
+    // ===== ЛОГИКА ПЛАНИРОВКИ =====
     const navTexts = {
         ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' },
         en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' }
@@ -796,25 +797,20 @@
         drawBoth();
     });
     
-    // ========== PWA БЛОК (ПРИНУДИТЕЛЬНАЯ УСТАНОВКА, БЕЗ ИНСТРУКЦИЙ) ==========
+    // ========== PWA БЛОК ==========
     let deferredPrompt;
     
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        console.log('✅ beforeinstallprompt перехвачен');
     });
     
     document.getElementById('pwaInstallIcon').addEventListener('click', async () => {
         if (deferredPrompt) {
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                console.log('✅ Установка принята');
-            }
+            await deferredPrompt.userChoice;
             deferredPrompt = null;
         }
-        // НИКАКОГО ALERT. НИКАКОЙ ИНСТРУКЦИИ.
     });
     
     if ('serviceWorker' in navigator) {
