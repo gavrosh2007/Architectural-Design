@@ -1,24 +1,27 @@
 {
-  "name": "HM&AD architectural design",
+  "name": "HM&AD Architectural Design",
   "short_name": "HM&AD",
-  "start_url": ".",
-  "scope": ".",
+  "description": "Архитектурный дизайн и планировка помещений",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": ["window-controls-overlay", "standalone"],
   "theme_color": "#e8491d",
   "background_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "lang": "ru",
   "icons": [
     {
       "src": "icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
