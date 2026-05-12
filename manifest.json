@@ -1,10 +1,9 @@
 {
   "name": "HM&AD architectural design",
   "short_name": "HM&AD",
-  "start_url": ".",
-  "scope": ".",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "theme_color": "#e8491d",
   "background_color": "#ffffff",
   "icons": [
