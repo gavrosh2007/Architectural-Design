@@ -26,7 +26,6 @@
         .lang-btn.active { background: #e8491d; }
         .install-area { text-align: center; margin: 1rem 0 2rem; }
         .pwa-icon-btn {
-            position: relative;
             background: none;
             border: none;
             cursor: pointer;
@@ -41,28 +40,6 @@
         }
         .pwa-icon-btn:active { transform: scale(0.97); }
         .pwa-icon-btn img { width: 96px; height: 96px; border-radius: 12px; }
-        .tooltip-text {
-            visibility: hidden;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px 10px;
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 0.75rem;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 20;
-        }
-        .pwa-icon-btn:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
         .hero { background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); border-radius: 32px; padding: 2rem; text-align: center; margin-bottom: 2rem; }
         .hero h1 { font-size: 2.5rem; color: #e8491d; text-shadow: 1px 1px 0 rgba(255,255,255,0.8); }
         .hero p { color: #1a1a1a; font-size: 1.2rem; margin-top: 0.5rem; }
@@ -112,7 +89,6 @@
         <button id="pwaInstallIcon" class="pwa-icon-btn">
             <img src="icon-192x192.png" width="96" height="96" alt="Иконка приложения">
             <span id="pwaBtnText">Установить приложение</span>
-            <span class="tooltip-text" id="pwaTooltip">💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».</span>
         </button>
     </div>
     <div id="ru-content" class="lang-content active">
@@ -191,34 +167,13 @@
     function setupSend() { let sendBtn = document.getElementById('sendFinalBtnRu'), sendBtnEn = document.getElementById('sendFinalBtnEn'); const handlerSend = () => { let comment = currentLang === 'ru' ? document.getElementById('commentRu').value : document.getElementById('commentEn').value, furnitureWish = currentLang === 'ru' ? document.getElementById('furnitureWishRu').value : document.getElementById('furnitureWishEn').value, electricWish = currentLang === 'ru' ? document.getElementById('electricWishRu').value : document.getElementById('electricWishEn').value, data = { lang: currentLang, planImage: planImage?.src || null, planObjects: planObjects, comment: comment, furniture: selectedFurniture, furnitureWish: furnitureWish, electricLevel: selectedElectric, electricWish: electricWish }; console.log('📤 Дизайнеру:', data); alert(currentLang === 'ru' ? 'Заказ отправлен! Дизайнер свяжется.' : 'Order sent! Designer will contact you.'); }; if (sendBtn) sendBtn.onclick = handlerSend; if (sendBtnEn) sendBtnEn.onclick = handlerSend; }
     function setupNav() { document.querySelectorAll('.nav-btn').forEach(btn => { btn.addEventListener('click', () => { let sectionId = btn.dataset.nav, element = document.getElementById(sectionId + (currentLang === 'en' ? '-en' : '')); if (element) element.scrollIntoView({ behavior: 'smooth' }); }); }); }
     function updateNavButtons() { const texts = navTexts[currentLang]; document.getElementById('navPlanBtn').innerText = texts.plan; document.getElementById('navObjectsBtn').innerText = texts.objects; document.getElementById('navFurnitureBtn').innerText = texts.furniture; document.getElementById('navElectricBtn').innerText = texts.electric; document.getElementById('navSendBtn').innerText = texts.send; }
-    function setLanguage(lang) { currentLang = lang; document.getElementById('ru-content').classList.toggle('active', lang === 'ru'); document.getElementById('en-content').classList.toggle('active', lang === 'en'); document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang)); let pwaText = document.getElementById('pwaBtnText'); if (pwaText) pwaText.innerText = lang === 'ru' ? 'Установить приложение' : 'Install app'; let tooltip = document.getElementById('pwaTooltip'); if (tooltip) tooltip.innerHTML = lang === 'ru' ? '💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».' : '💡 Click — install as app.<br>• Chrome/Edge: dialog appears.<br>• iPhone: Share → Add to Home Screen.'; updateNavButtons(); drawBoth(); }
+    function setLanguage(lang) { currentLang = lang; document.getElementById('ru-content').classList.toggle('active', lang === 'ru'); document.getElementById('en-content').classList.toggle('active', lang === 'en'); document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang)); let pwaText = document.getElementById('pwaBtnText'); if (pwaText) pwaText.innerText = lang === 'ru' ? 'Установить приложение' : 'Install app'; updateNavButtons(); drawBoth(); }
     document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
     window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
-    
-    // ПРЯМАЯ КОМАНДА НА УСТАНОВКУ PWA
     let deferredPrompt;
-    
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
-    
-    document.getElementById('pwaInstallIcon').addEventListener('click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
-            deferredPrompt = null;
-        } else {
-            // ИНСТРУКЦИЯ ТОЛЬКО КОГДА УСТАНОВКА НЕВОЗМОЖНА
-            if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-                alert('Нажмите Поделиться → На экран "Домой"');
-            } else {
-                alert('Нажмите ⋮ → Установить приложение');
-            }
-        }
-    });
-    
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(reg => console.log('SW registered', reg)).catch(err => console.error('SW error', err));
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+    document.getElementById('pwaInstallIcon').addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; } else { alert(currentLang === 'ru' ? 'Установка невозможна. Используйте Chrome/Edge на десктопе или Safari на iPhone' : 'Installation impossible. Use Chrome/Edge on desktop or Safari on iPhone'); } });
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(reg => console.log('SW registered')).catch(err => console.error('SW error', err));
     updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();
 </script>
 </body>
