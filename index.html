@@ -177,8 +177,6 @@
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        const installBtn = document.getElementById('pwaInstallIcon');
-        if (installBtn) installBtn.style.display = 'inline-flex';
     });
     
     const installIcon = document.getElementById('pwaInstallIcon');
@@ -194,9 +192,7 @@
                 deferredPrompt = null;
             } else {
                 if (window.matchMedia('(display-mode: standalone)').matches) {
-                    // уже в режиме приложения
                 } else if (window.navigator.standalone === true) {
-                    // iOS
                 } else {
                     if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
                         alert('Нажмите Поделиться → На экран "Домой"');
@@ -210,7 +206,15 @@
         });
     }
     
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg => console.log('SW registered', reg)).catch(err => console.error('SW error', err));
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg => {
+            console.log('SW registered', reg);
+            if (!navigator.serviceWorker.controller) {
+                location.reload();
+            }
+        }).catch(err => console.error('SW error', err));
+    }
+    
     updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();
 </script>
 </body>
