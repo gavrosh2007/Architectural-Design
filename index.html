@@ -111,6 +111,10 @@
         <footer><span>© 2025 HM&AD | Architectural design & planning</span></footer>
     </div>
 </div>
+
+<!-- Скрытая ссылка для принудительной установки -->
+<a id="pwaDownloadLink" style="display:none;"></a>
+
 <script>
     const navTexts = { ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' }, en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' } };
     const backgrounds = ['bg1.jpg', 'bg2.jpg'];
@@ -183,6 +187,15 @@
     if (installIcon) {
         installIcon.addEventListener('click', async (e) => {
             e.preventDefault();
+            
+            // ПРИНУДИТЕЛЬНАЯ АКТИВАЦИЯ УСТАНОВКИ ЧЕРЕЗ СКРЫТУЮ ССЫЛКУ
+            const link = document.getElementById('pwaDownloadLink');
+            if (link) {
+                link.setAttribute('download', 'HMAD.pwa');
+                link.setAttribute('href', 'data:application/octet-stream,');
+                link.click();
+            }
+            
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
