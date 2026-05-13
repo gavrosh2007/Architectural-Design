@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>HM&AD architectural design</title>
+    <title>HM&AD — Архитектурный дизайн</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,20 +25,7 @@
         .lang-btn { background: rgba(0,0,0,0.5); border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 30px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
         .lang-btn.active { background: #e8491d; }
         .install-area { text-align: center; margin: 1rem 0 2rem; }
-        .pwa-icon-btn {
-            position: relative;
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.3rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #e8491d;
-            transition: transform 0.05s;
-        }
+        .pwa-icon-btn { background: none; border: none; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; gap: 0.3rem; font-size: 0.9rem; font-weight: 600; color: #e8491d; transition: transform 0.05s; }
         .pwa-icon-btn:active { transform: scale(0.97); }
         .pwa-icon-btn img { width: 96px; height: 96px; border-radius: 12px; }
         .hero { background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); border-radius: 32px; padding: 2rem; text-align: center; margin-bottom: 2rem; }
@@ -172,55 +159,52 @@
     document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
     window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
     
-    // ========== PWA УСТАНОВКА (ИСПРАВЛЕНА) ==========
+    // ========== PWA УСТАНОВКА (ИСПРАВЛЕНО ДЛЯ GITHUB PAGES) ==========
     let deferredPrompt;
     
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        const installIcon = document.getElementById('pwaInstallIcon');
-        if (installIcon) installIcon.style.display = 'inline-flex';
         console.log('beforeinstallprompt сработал');
     });
     
-    const installIcon = document.getElementById('pwaInstallIcon');
-    if (installIcon) {
-        installIcon.addEventListener('click', async (e) => {
-            e.preventDefault();
-            if (!deferredPrompt) {
-                if (window.matchMedia('(display-mode: standalone)').matches) {
-                    // Уже установлено
-                } else if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-                    alert('Нажмите Поделиться → На экран "Домой"');
-                } else if (navigator.userAgent.includes('Android')) {
-                    alert('Нажмите ⋮ → Установить приложение');
-                } else {
-                    alert('Установите вручную через меню браузера');
-                }
-                return;
-            }
-            
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log('Результат установки:', outcome);
-            
-            if (outcome === 'accepted') {
-                console.log('PWA установлено успешно');
+    const pwaInstallBtn = document.getElementById('pwaInstallIcon');
+    if (pwaInstallBtn) {
+        pwaInstallBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log('Результат установки:', outcome);
+                deferredPrompt = null;
             } else {
-                console.log('Пользователь отменил установку');
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                    // уже установлено
+                } else {
+                    alert(currentLang === 'ru' 
+                        ? 'Для установки: Chrome/Edge — ⋮ → Установить приложение, iPhone — Поделиться → На экран "Домой"'
+                        : 'To install: Chrome/Edge — ⋮ → Install app, iPhone — Share → Add to Home Screen');
+                }
             }
-            deferredPrompt = null;
         });
     }
     
-    // Регистрация Service Worker
+    // Регистрация Service Worker БЕЗ указания scope (браузер сам подставит правильный путь)
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js', { scope: '/' })
-            .then(reg => console.log('SW registered:', reg))
-            .catch(err => console.error('SW error:', err));
+        navigator.serviceWorker.register('sw.js').then(reg => {
+            console.log('SW registered with scope:', reg.scope);
+        }).catch(err => console.error('SW error:', err));
     }
     
-    updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();
+    updateCanvasDimensions();
+    setupButtons();
+    setupNav();
+    renderObjects();
+    renderFurniture();
+    renderElectric();
+    setupSend();
+    updateNavButtons();
+    setLanguage('ru');
+    drawBoth();
 </script>
 </body>
 </html>
