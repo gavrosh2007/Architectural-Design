@@ -112,7 +112,7 @@
         <button id="pwaInstallIcon" class="pwa-icon-btn">
             <img src="icon-192x192.png" width="96" height="96" alt="Иконка приложения">
             <span id="pwaBtnText">Установить приложение</span>
-            <span class="tooltip-text" id="pwaTooltip">💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».</span>
+            <span class="tooltip-text" id="pwaTooltip">💡 Нажмите — установите как приложение</span>
         </button>
     </div>
     <div id="ru-content" class="lang-content active">
@@ -191,44 +191,34 @@
     function setupSend() { let sendBtn = document.getElementById('sendFinalBtnRu'), sendBtnEn = document.getElementById('sendFinalBtnEn'); const handlerSend = () => { let comment = currentLang === 'ru' ? document.getElementById('commentRu').value : document.getElementById('commentEn').value, furnitureWish = currentLang === 'ru' ? document.getElementById('furnitureWishRu').value : document.getElementById('furnitureWishEn').value, electricWish = currentLang === 'ru' ? document.getElementById('electricWishRu').value : document.getElementById('electricWishEn').value, data = { lang: currentLang, planImage: planImage?.src || null, planObjects: planObjects, comment: comment, furniture: selectedFurniture, furnitureWish: furnitureWish, electricLevel: selectedElectric, electricWish: electricWish }; console.log('📤 Дизайнеру:', data); alert(currentLang === 'ru' ? 'Заказ отправлен! Дизайнер свяжется.' : 'Order sent! Designer will contact you.'); }; if (sendBtn) sendBtn.onclick = handlerSend; if (sendBtnEn) sendBtnEn.onclick = handlerSend; }
     function setupNav() { document.querySelectorAll('.nav-btn').forEach(btn => { btn.addEventListener('click', () => { let sectionId = btn.dataset.nav, element = document.getElementById(sectionId + (currentLang === 'en' ? '-en' : '')); if (element) element.scrollIntoView({ behavior: 'smooth' }); }); }); }
     function updateNavButtons() { const texts = navTexts[currentLang]; document.getElementById('navPlanBtn').innerText = texts.plan; document.getElementById('navObjectsBtn').innerText = texts.objects; document.getElementById('navFurnitureBtn').innerText = texts.furniture; document.getElementById('navElectricBtn').innerText = texts.electric; document.getElementById('navSendBtn').innerText = texts.send; }
-    function setLanguage(lang) { currentLang = lang; document.getElementById('ru-content').classList.toggle('active', lang === 'ru'); document.getElementById('en-content').classList.toggle('active', lang === 'en'); document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang)); let pwaText = document.getElementById('pwaBtnText'); if (pwaText) pwaText.innerText = lang === 'ru' ? 'Установить приложение' : 'Install app'; let tooltip = document.getElementById('pwaTooltip'); if (tooltip) tooltip.innerHTML = lang === 'ru' ? '💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».' : '💡 Click — install as app.<br>• Chrome/Edge: dialog appears.<br>• iPhone: Share → Add to Home Screen.'; updateNavButtons(); drawBoth(); }
+    function setLanguage(lang) { currentLang = lang; document.getElementById('ru-content').classList.toggle('active', lang === 'ru'); document.getElementById('en-content').classList.toggle('active', lang === 'en'); document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang)); let pwaText = document.getElementById('pwaBtnText'); if (pwaText) pwaText.innerText = lang === 'ru' ? 'Установить приложение' : 'Install app'; let tooltip = document.getElementById('pwaTooltip'); if (tooltip) tooltip.innerHTML = lang === 'ru' ? '💡 Нажмите — установите как приложение' : '💡 Click — install as app'; updateNavButtons(); drawBoth(); }
     document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
     window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
     
-    // ПРЯМАЯ КОМАНДА НА УСТАНОВКУ PWA - КНОПКА ИНИЦИАЛИЗИРУЕТ ДИАЛОГ
+    // ====== ИСПРАВЛЕННЫЙ МЕХАНИЗМ УСТАНОВКИ ======
     let deferredPrompt;
     
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        // Показываем кнопку как активную для установки
-        const installBtn = document.getElementById('pwaInstallIcon');
-        if (installBtn) {
-            installBtn.style.opacity = '1';
-        }
+        console.log('beforeinstallprompt перехвачен');
     });
     
-    // ОБРАБОТЧИК КНОПКИ - ВЫЗЫВАЕТ ДИАЛОГ УСТАНОВКИ
-    document.getElementById('pwaInstallIcon').addEventListener('click', async (e) => {
-        e.preventDefault();
+    document.getElementById('pwaInstallIcon').addEventListener('click', async () => {
         if (deferredPrompt) {
-            // ЗАПУСКАЕМ ДИАЛОГ УСТАНОВКИ
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Результат установки: ${outcome}`);
+            console.log('Результат:', outcome);
             deferredPrompt = null;
         } else {
-            // Если диалог не инициализирован - показываем руководство по ручной установке
             if (window.matchMedia('(display-mode: standalone)').matches) {
-                // Уже установлено
-                alert(currentLang === 'ru' ? 'Приложение уже установлено' : 'App is already installed');
-            } else if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-                alert(currentLang === 'ru' ? 'Нажмите Поделиться → На экран "Домой"' : 'Tap Share → Add to Home Screen');
+                alert('Приложение уже установлено');
             } else {
-                alert(currentLang === 'ru' ? 'Нажмите ⋮ → Установить приложение' : 'Click ⋮ → Install app');
+                alert('Установка через браузер: ⋮ → Установить приложение');
             }
         }
     });
+    // ============================================
     
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(reg => console.log('SW registered', reg)).catch(err => console.error('SW error', err));
     updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();
