@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>HM&AD architectural design</title>
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/icon-192x192.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="HM&AD">
@@ -88,7 +88,7 @@
     </header>
     <div class="install-area">
         <button id="pwaInstallIcon" class="pwa-icon-btn">
-            <img src="/icon-192x192.png" width="96" height="96" alt="Иконка приложения">
+            <img src="icon-192x192.png" width="96" height="96" alt="Иконка приложения">
             <span id="pwaBtnText">Установить приложение</span>
         </button>
     </div>
@@ -113,7 +113,7 @@
 </div>
 <script>
     const navTexts = { ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' }, en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' } };
-    const backgrounds = ['/bg1.jpg', '/bg2.jpg'];
+    const backgrounds = ['bg1.jpg', 'bg2.jpg'];
     document.getElementById('bgLayer').style.backgroundImage = `url(${backgrounds[Math.floor(Math.random() * backgrounds.length)]})`;
     const REAL_SIZES_MM = { sofa: { w: 2000, h: 900 }, bed: { w: 2000, h: 1600 }, toilet: { w: 400, h: 600 }, shower: { w: 900, h: 900 }, stairs: { w: 800, h: 2500 }, kitchen: { w: 1800, h: 600 }, ac: { w: 800, h: 250 }, sauna: { w: 1200, h: 1200 }, wardrobe: { w: 1000, h: 600 }, table: { w: 1400, h: 800 }, armchair: { w: 800, h: 800 }, washer: { w: 600, h: 600 } };
     const objectsList = { ru: [{ id: 'sofa', emoji: '🛋️', name: 'Диван', real: 'sofa' }, { id: 'bed', emoji: '🛏️', name: 'Кровать', real: 'bed' }, { id: 'toilet', emoji: '🚽', name: 'Унитаз', real: 'toilet' }, { id: 'shower', emoji: '🚿', name: 'Душ', real: 'shower' }, { id: 'stairs', emoji: '🪜', name: 'Лестница', real: 'stairs' }, { id: 'kitchen', emoji: '🧱', name: 'Кухня/остров', real: 'kitchen' }, { id: 'ac', emoji: '❄️', name: 'Кондиционер', real: 'ac' }, { id: 'sauna', emoji: '🔥', name: 'Сауна', real: 'sauna' }, { id: 'wardrobe', emoji: '🧥', name: 'Шкаф', real: 'wardrobe' }, { id: 'table', emoji: '🍽️', name: 'Стол', real: 'table' }, { id: 'armchair', emoji: '🪑', name: 'Кресло', real: 'armchair' }, { id: 'washer', emoji: '👕', name: 'Стиралка', real: 'washer' }], en: [{ id: 'sofa', emoji: '🛋️', name: 'Sofa', real: 'sofa' }, { id: 'bed', emoji: '🛏️', name: 'Bed', real: 'bed' }, { id: 'toilet', emoji: '🚽', name: 'Toilet', real: 'toilet' }, { id: 'shower', emoji: '🚿', name: 'Shower', real: 'shower' }, { id: 'stairs', emoji: '🪜', name: 'Stairs', real: 'stairs' }, { id: 'kitchen', emoji: '🧱', name: 'Kitchen island', real: 'kitchen' }, { id: 'ac', emoji: '❄️', name: 'AC', real: 'ac' }, { id: 'sauna', emoji: '🔥', name: 'Sauna', real: 'sauna' }, { id: 'wardrobe', emoji: '🧥', name: 'Wardrobe', real: 'wardrobe' }, { id: 'table', emoji: '🍽️', name: 'Table', real: 'table' }, { id: 'armchair', emoji: '🪑', name: 'Armchair', real: 'armchair' }, { id: 'washer', emoji: '👕', name: 'Washer', real: 'washer' }] };
@@ -172,49 +172,48 @@
     document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
     window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
     
-    // ========== PWA УСТАНОВКА (ЭТАЛОН) ==========
     let deferredPrompt;
     
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        console.log('PWA installation prompt available');
     });
     
     const installIcon = document.getElementById('pwaInstallIcon');
     if (installIcon) {
-        installIcon.addEventListener('click', async () => {
+        installIcon.addEventListener('click', async (e) => {
+            e.preventDefault();
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                console.log(`PWA installation ${outcome}`);
+                if (outcome === 'accepted') {
+                    console.log('PWA установлено');
+                    window.open('/', '_blank');
+                }
                 deferredPrompt = null;
             } else {
-                if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-                    // Уже установлено
-                } else if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-                    alert(currentLang === 'ru' 
-                        ? 'Нажмите Поделиться → На экран "Домой"' 
-                        : 'Tap Share → Add to Home Screen');
-                } else if (/Android/.test(navigator.userAgent)) {
-                    alert(currentLang === 'ru' 
-                        ? 'Нажмите ⋮ → Установить приложение' 
-                        : 'Tap ⋮ → Install app');
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                } else if (window.navigator.standalone === true) {
                 } else {
-                    alert(currentLang === 'ru' 
-                        ? 'Установите вручную через меню браузера' 
-                        : 'Install manually via browser menu');
+                    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+                        alert('Нажмите Поделиться → На экран "Домой"');
+                    } else if (navigator.userAgent.includes('Android')) {
+                        alert('Нажмите ⋮ → Установить приложение');
+                    } else {
+                        alert(currentLang === 'ru' ? 'Установите вручную через меню браузера' : 'Install manually via browser menu');
+                    }
                 }
             }
         });
     }
-    // ===========================================
     
-    // Service Worker регистрация
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js', { scope: '/' })
-            .then(reg => console.log('SW registered:', reg))
-            .catch(err => console.error('SW error:', err));
+        navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg => {
+            console.log('SW registered', reg);
+            if (!navigator.serviceWorker.controller) {
+                location.reload();
+            }
+        }).catch(err => console.error('SW error', err));
     }
     
     updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();
