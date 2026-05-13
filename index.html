@@ -188,6 +188,7 @@
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
                     console.log('PWA установлено');
+                    window.open('/', '_blank');
                 }
                 deferredPrompt = null;
             } else {
