@@ -195,25 +195,37 @@
     document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
     window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
     
-    // ПРЯМАЯ КОМАНДА НА УСТАНОВКУ PWA
+    // ПРЯМАЯ КОМАНДА НА УСТАНОВКУ PWA - КНОПКА ИНИЦИАЛИЗИРУЕТ ДИАЛОГ
     let deferredPrompt;
     
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
+        // Показываем кнопку как активную для установки
+        const installBtn = document.getElementById('pwaInstallIcon');
+        if (installBtn) {
+            installBtn.style.opacity = '1';
+        }
     });
     
-    document.getElementById('pwaInstallIcon').addEventListener('click', async () => {
+    // ОБРАБОТЧИК КНОПКИ - ВЫЗЫВАЕТ ДИАЛОГ УСТАНОВКИ
+    document.getElementById('pwaInstallIcon').addEventListener('click', async (e) => {
+        e.preventDefault();
         if (deferredPrompt) {
+            // ЗАПУСКАЕМ ДИАЛОГ УСТАНОВКИ
             deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Результат установки: ${outcome}`);
             deferredPrompt = null;
         } else {
-            // ИНСТРУКЦИЯ ТОЛЬКО КОГДА УСТАНОВКА НЕВОЗМОЖНА
-            if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-                alert('Нажмите Поделиться → На экран "Домой"');
+            // Если диалог не инициализирован - показываем руководство по ручной установке
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                // Уже установлено
+                alert(currentLang === 'ru' ? 'Приложение уже установлено' : 'App is already installed');
+            } else if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+                alert(currentLang === 'ru' ? 'Нажмите Поделиться → На экран "Домой"' : 'Tap Share → Add to Home Screen');
             } else {
-                alert('Нажмите ⋮ → Установить приложение');
+                alert(currentLang === 'ru' ? 'Нажмите ⋮ → Установить приложение' : 'Click ⋮ → Install app');
             }
         }
     });
