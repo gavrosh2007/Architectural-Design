@@ -172,48 +172,52 @@
     document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
     window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
     
+    // ========== PWA УСТАНОВКА (ИСПРАВЛЕНА) ==========
     let deferredPrompt;
     
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
+        const installIcon = document.getElementById('pwaInstallIcon');
+        if (installIcon) installIcon.style.display = 'inline-flex';
+        console.log('beforeinstallprompt сработал');
     });
     
     const installIcon = document.getElementById('pwaInstallIcon');
     if (installIcon) {
         installIcon.addEventListener('click', async (e) => {
             e.preventDefault();
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    console.log('PWA установлено');
-                    window.open('/', '_blank');
-                }
-                deferredPrompt = null;
-            } else {
+            if (!deferredPrompt) {
                 if (window.matchMedia('(display-mode: standalone)').matches) {
-                } else if (window.navigator.standalone === true) {
+                    // Уже установлено
+                } else if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+                    alert('Нажмите Поделиться → На экран "Домой"');
+                } else if (navigator.userAgent.includes('Android')) {
+                    alert('Нажмите ⋮ → Установить приложение');
                 } else {
-                    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-                        alert('Нажмите Поделиться → На экран "Домой"');
-                    } else if (navigator.userAgent.includes('Android')) {
-                        alert('Нажмите ⋮ → Установить приложение');
-                    } else {
-                        alert(currentLang === 'ru' ? 'Установите вручную через меню браузера' : 'Install manually via browser menu');
-                    }
+                    alert('Установите вручную через меню браузера');
                 }
+                return;
             }
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log('Результат установки:', outcome);
+            
+            if (outcome === 'accepted') {
+                console.log('PWA установлено успешно');
+            } else {
+                console.log('Пользователь отменил установку');
+            }
+            deferredPrompt = null;
         });
     }
     
+    // Регистрация Service Worker
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg => {
-            console.log('SW registered', reg);
-            if (!navigator.serviceWorker.controller) {
-                location.reload();
-            }
-        }).catch(err => console.error('SW error', err));
+        navigator.serviceWorker.register('sw.js', { scope: '/' })
+            .then(reg => console.log('SW registered:', reg))
+            .catch(err => console.error('SW error:', err));
     }
     
     updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();

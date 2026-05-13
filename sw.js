@@ -1,6 +1,6 @@
-const CACHE_NAME = 'hmad-v13';
+const CACHE_NAME = 'hmad-v15';
 const urlsToCache = [
-  '.',
+  '/',
   'index.html',
   'offline.html',
   'manifest.json',
@@ -17,17 +17,19 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
+  // Не перехватываем запросы к расширениям Chrome
+  if (event.request.url.startsWith('chrome-extension')) return;
+  
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) return response;
-        return fetch(event.request).catch(() => {
-          if (event.request.mode === 'navigate') {
-            return caches.match('offline.html');
-          }
-          return new Response('Offline', { status: 503 });
-        });
-      })
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
+      return fetch(event.request).catch(() => {
+        if (event.request.mode === 'navigate') {
+          return caches.match('offline.html');
+        }
+        return new Response('Offline', { status: 503 });
+      });
+    })
   );
 });
 
