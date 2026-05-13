@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmad-v11';
+const CACHE_NAME = 'hmad-v12';
 const urlsToCache = [
   '.',
   'index.html',
