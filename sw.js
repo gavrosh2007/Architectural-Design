@@ -17,7 +17,6 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Не перехватываем запросы к расширениям Chrome
   if (event.request.url.startsWith('chrome-extension')) return;
   
   event.respondWith(

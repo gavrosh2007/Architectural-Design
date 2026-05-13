@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>HM&AD architectural design</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="HM&AD">
@@ -25,22 +24,12 @@
         .lang-btn { background: rgba(0,0,0,0.5); border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 30px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
         .lang-btn.active { background: #e8491d; }
         .install-area { text-align: center; margin: 1rem 0 2rem; }
-        .pwa-icon-btn {
-            position: relative;
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.3rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #e8491d;
-            transition: transform 0.05s;
-        }
+        .install-tooltip { position: relative; display: inline-block; }
+        .pwa-icon-btn { background: none; border: none; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; gap: 0.3rem; font-size: 0.9rem; font-weight: 600; color: #e8491d; transition: transform 0.05s; }
         .pwa-icon-btn:active { transform: scale(0.97); }
         .pwa-icon-btn img { width: 96px; height: 96px; border-radius: 12px; }
+        .tooltip-text { visibility: hidden; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 5px 10px; position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 0.75rem; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 20; }
+        .install-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
         .hero { background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); border-radius: 32px; padding: 2rem; text-align: center; margin-bottom: 2rem; }
         .hero h1 { font-size: 2.5rem; color: #e8491d; text-shadow: 1px 1px 0 rgba(255,255,255,0.8); }
         .hero p { color: #1a1a1a; font-size: 1.2rem; margin-top: 0.5rem; }
@@ -86,140 +75,199 @@
             <button class="nav-btn" data-nav="send" id="navSendBtn"></button>
         </div>
     </header>
+
     <div class="install-area">
-        <button id="pwaInstallIcon" class="pwa-icon-btn">
-            <img src="icon-192x192.png" width="96" height="96" alt="Иконка приложения">
-            <span id="pwaBtnText">Установить приложение</span>
-        </button>
+        <div class="install-tooltip">
+            <button id="pwaInstallIcon" class="pwa-icon-btn">
+                <img src="icon-192x192.png" width="96" height="96" alt="Иконка приложения">
+                <span id="pwaBtnText">Установить приложение</span>
+            </button>
+            <span class="tooltip-text" id="pwaTooltip">💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».</span>
+        </div>
     </div>
+
+    <!-- Код на русском -->
     <div id="ru-content" class="lang-content active">
-        <div class="hero"><h1>HM&AD — Архитектурный дизайн</h1><p>Расставьте объекты на плане — дизайнер всё поймёт</p></div>
-        <div id="plan" class="plan-area"><div class="canvas-container"><canvas id="planCanvas" width="900" height="600"></canvas></div><div class="button-group"><button class="btn" id="cameraBtn">📷 Снять план</button><button class="btn" id="loadBtn">📁 Загрузить план</button><button class="btn" id="calibrateDoorBtn" style="background:#2a6a4a">🚪 Калибровать дверь</button><button class="btn" id="resetObjBtn">🗑️ Очистить всё</button></div><div id="calibStatus" class="instruction">🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма</div></div>
+        <div class="hero">
+            <h1>HM&AD — Архитектурный дизайн</h1>
+            <p>Расставьте объекты на плане — дизайнер всё поймёт</p>
+        </div>
+        <div id="plan" class="plan-area">
+            <div class="canvas-container"><canvas id="planCanvas" width="900" height="600"></canvas></div>
+            <div class="button-group">
+                <button class="btn" id="cameraBtn">📷 Снять план</button>
+                <button class="btn" id="loadBtn">📁 Загрузить план</button>
+                <button class="btn" id="calibrateDoorBtn" style="background:#2a6a4a">🚪 Калибровать дверь</button>
+                <button class="btn" id="resetObjBtn">🗑️ Очистить всё</button>
+            </div>
+            <div id="calibStatus" class="instruction">🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма</div>
+        </div>
         <div id="objects"><h2 class="section-title">📦 Объекты для расстановки</h2><div class="cards-grid" id="objectsGridRu"></div></div>
-        <div id="furniture" class="form-card"><h3 style="color:#e8491d; margin-bottom:1rem;">🛋️ Что нужно купить/заменить?</h3><div class="checkbox-group" id="furnitureChecklistRu"></div><div class="form-group"><textarea id="furnitureWishRu" rows="2" placeholder="Дополнительные пожелания по мебели..."></textarea></div></div>
-        <div id="electric" class="form-card"><h3 style="color:#e8491d; margin-bottom:1rem;">⚡ Электротехника</h3><div class="checkbox-group" id="electricLevelsRu"></div><div class="form-group"><textarea id="electricWishRu" rows="3" placeholder="Розетки, свет, тёплый пол, интернет..."></textarea></div></div>
-        <div id="send" class="form-card"><div class="form-group"><textarea id="commentRu" rows="3" placeholder="💬 Ваша идея, пояснения..."></textarea></div><button class="btn btn-primary" id="sendFinalBtnRu" style="width:100%;">📤 ОТПРАВИТЬ ДИЗАЙНЕРУ</button></div>
+        <div id="furniture" class="form-card">
+            <h3 style="color:#e8491d; margin-bottom:1rem;">🛋️ Что нужно купить/заменить?</h3>
+            <div class="checkbox-group" id="furnitureChecklistRu"></div>
+            <div class="form-group"><textarea id="furnitureWishRu" rows="2" placeholder="Дополнительные пожелания по мебели..."></textarea></div>
+        </div>
+        <div id="electric" class="form-card">
+            <h3 style="color:#e8491d; margin-bottom:1rem;">⚡ Электротехника</h3>
+            <div class="checkbox-group" id="electricLevelsRu"></div>
+            <div class="form-group"><textarea id="electricWishRu" rows="3" placeholder="Розетки, свет, тёплый пол, интернет..."></textarea></div>
+        </div>
+        <div id="send" class="form-card">
+            <div class="form-group"><textarea id="commentRu" rows="3" placeholder="💬 Ваша идея, пояснения..."></textarea></div>
+            <button class="btn btn-primary" id="sendFinalBtnRu" style="width:100%;">📤 ОТПРАВИТЬ ДИЗАЙНЕРУ</button>
+        </div>
         <footer><span>© 2025 HM&AD | Архитектурный дизайн и планировка</span></footer>
     </div>
+
+    <!-- Код на английском -->
     <div id="en-content" class="lang-content">
         <div class="hero"><h1>HM&AD — Architectural Design</h1><p>Place objects on the plan — designer will understand</p></div>
-        <div id="plan-en" class="plan-area"><div class="canvas-container"><canvas id="planCanvasEn" width="900" height="600"></canvas></div><div class="button-group"><button class="btn" id="cameraBtnEn">📷 Take plan photo</button><button class="btn" id="loadBtnEn">📁 Upload plan</button><button class="btn" id="calibrateDoorBtnEn" style="background:#2a6a4a">🚪 Calibrate door</button><button class="btn" id="resetObjBtnEn">🗑️ Clear all</button></div><div id="calibStatusEn" class="instruction">🚪 Click "Calibrate door", then tap START and END of doorway</div></div>
+        <div id="plan-en" class="plan-area">
+            <div class="canvas-container"><canvas id="planCanvasEn" width="900" height="600"></canvas></div>
+            <div class="button-group">
+                <button class="btn" id="cameraBtnEn">📷 Take plan photo</button>
+                <button class="btn" id="loadBtnEn">📁 Upload plan</button>
+                <button class="btn" id="calibrateDoorBtnEn" style="background:#2a6a4a">🚪 Calibrate door</button>
+                <button class="btn" id="resetObjBtnEn">🗑️ Clear all</button>
+            </div>
+            <div id="calibStatusEn" class="instruction">🚪 Click "Calibrate door", then tap START and END of doorway</div>
+        </div>
         <div id="objects-en"><h2 class="section-title">📦 Objects to place</h2><div class="cards-grid" id="objectsGridEn"></div></div>
-        <div id="furniture-en" class="form-card"><h3 style="color:#e8491d; margin-bottom:1rem;">🛋️ What to buy/replace?</h3><div class="checkbox-group" id="furnitureChecklistEn"></div><div class="form-group"><textarea id="furnitureWishEn" rows="2" placeholder="Additional furniture wishes..."></textarea></div></div>
-        <div id="electric-en" class="form-card"><h3 style="color:#e8491d; margin-bottom:1rem;">⚡ Electrical</h3><div class="checkbox-group" id="electricLevelsEn"></div><div class="form-group"><textarea id="electricWishEn" rows="3" placeholder="Outlets, lighting, heated floor, internet..."></textarea></div></div>
-        <div id="send-en" class="form-card"><div class="form-group"><textarea id="commentEn" rows="3" placeholder="💬 Your idea, notes..."></textarea></div><button class="btn btn-primary" id="sendFinalBtnEn" style="width:100%;">📤 SEND TO DESIGNER</button></div>
+        <div id="furniture-en" class="form-card">
+            <h3 style="color:#e8491d; margin-bottom:1rem;">🛋️ What to buy/replace?</h3>
+            <div class="checkbox-group" id="furnitureChecklistEn"></div>
+            <div class="form-group"><textarea id="furnitureWishEn" rows="2" placeholder="Additional furniture wishes..."></textarea></div>
+        </div>
+        <div id="electric-en" class="form-card">
+            <h3 style="color:#e8491d; margin-bottom:1rem;">⚡ Electrical</h3>
+            <div class="checkbox-group" id="electricLevelsEn"></div>
+            <div class="form-group"><textarea id="electricWishEn" rows="3" placeholder="Outlets, lighting, heated floor, internet..."></textarea></div>
+        </div>
+        <div id="send-en" class="form-card">
+            <div class="form-group"><textarea id="commentEn" rows="3" placeholder="💬 Your idea, notes..."></textarea></div>
+            <button class="btn btn-primary" id="sendFinalBtnEn" style="width:100%;">📤 SEND TO DESIGNER</button>
+        </div>
         <footer><span>© 2025 HM&AD | Architectural design & planning</span></footer>
     </div>
 </div>
+
 <script>
+    // ========== ВСЯ ЛОГИКА ПЛАНИРОВКИ (ВАША) ==========
     const navTexts = { ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' }, en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' } };
     const backgrounds = ['bg1.jpg', 'bg2.jpg'];
     document.getElementById('bgLayer').style.backgroundImage = `url(${backgrounds[Math.floor(Math.random() * backgrounds.length)]})`;
     const REAL_SIZES_MM = { sofa: { w: 2000, h: 900 }, bed: { w: 2000, h: 1600 }, toilet: { w: 400, h: 600 }, shower: { w: 900, h: 900 }, stairs: { w: 800, h: 2500 }, kitchen: { w: 1800, h: 600 }, ac: { w: 800, h: 250 }, sauna: { w: 1200, h: 1200 }, wardrobe: { w: 1000, h: 600 }, table: { w: 1400, h: 800 }, armchair: { w: 800, h: 800 }, washer: { w: 600, h: 600 } };
-    const objectsList = { ru: [{ id: 'sofa', emoji: '🛋️', name: 'Диван', real: 'sofa' }, { id: 'bed', emoji: '🛏️', name: 'Кровать', real: 'bed' }, { id: 'toilet', emoji: '🚽', name: 'Унитаз', real: 'toilet' }, { id: 'shower', emoji: '🚿', name: 'Душ', real: 'shower' }, { id: 'stairs', emoji: '🪜', name: 'Лестница', real: 'stairs' }, { id: 'kitchen', emoji: '🧱', name: 'Кухня/остров', real: 'kitchen' }, { id: 'ac', emoji: '❄️', name: 'Кондиционер', real: 'ac' }, { id: 'sauna', emoji: '🔥', name: 'Сауна', real: 'sauna' }, { id: 'wardrobe', emoji: '🧥', name: 'Шкаф', real: 'wardrobe' }, { id: 'table', emoji: '🍽️', name: 'Стол', real: 'table' }, { id: 'armchair', emoji: '🪑', name: 'Кресло', real: 'armchair' }, { id: 'washer', emoji: '👕', name: 'Стиралка', real: 'washer' }], en: [{ id: 'sofa', emoji: '🛋️', name: 'Sofa', real: 'sofa' }, { id: 'bed', emoji: '🛏️', name: 'Bed', real: 'bed' }, { id: 'toilet', emoji: '🚽', name: 'Toilet', real: 'toilet' }, { id: 'shower', emoji: '🚿', name: 'Shower', real: 'shower' }, { id: 'stairs', emoji: '🪜', name: 'Stairs', real: 'stairs' }, { id: 'kitchen', emoji: '🧱', name: 'Kitchen island', real: 'kitchen' }, { id: 'ac', emoji: '❄️', name: 'AC', real: 'ac' }, { id: 'sauna', emoji: '🔥', name: 'Sauna', real: 'sauna' }, { id: 'wardrobe', emoji: '🧥', name: 'Wardrobe', real: 'wardrobe' }, { id: 'table', emoji: '🍽️', name: 'Table', real: 'table' }, { id: 'armchair', emoji: '🪑', name: 'Armchair', real: 'armchair' }, { id: 'washer', emoji: '👕', name: 'Washer', real: 'washer' }] };
-    const furnitureItems = [{ id: 'sofa', nameRu: 'Диван', nameEn: 'Sofa' }, { id: 'bed', nameRu: 'Кровать', nameEn: 'Bed' }, { id: 'wardrobe', nameRu: 'Шкаф', nameEn: 'Wardrobe' }, { id: 'table', nameRu: 'Стол', nameEn: 'Table' }, { id: 'lighting', nameRu: 'Освещение', nameEn: 'Lighting' }, { id: 'textile', nameRu: 'Текстиль', nameEn: 'Textile' }];
-    const electricLevels = [{ id: 'econom', nameRu: 'Бюджетный', nameEn: 'Budget' }, { id: 'medium', nameRu: 'Средний', nameEn: 'Medium' }, { id: 'premium', nameRu: 'Высокий', nameEn: 'High' }];
+    const objectsList = { ru: [ { id: 'sofa', emoji: '🛋️', name: 'Диван', real: 'sofa' }, { id: 'bed', emoji: '🛏️', name: 'Кровать', real: 'bed' }, { id: 'toilet', emoji: '🚽', name: 'Унитаз', real: 'toilet' }, { id: 'shower', emoji: '🚿', name: 'Душ', real: 'shower' }, { id: 'stairs', emoji: '🪜', name: 'Лестница', real: 'stairs' }, { id: 'kitchen', emoji: '🧱', name: 'Кухня/остров', real: 'kitchen' }, { id: 'ac', emoji: '❄️', name: 'Кондиционер', real: 'ac' }, { id: 'sauna', emoji: '🔥', name: 'Сауна', real: 'sauna' }, { id: 'wardrobe', emoji: '🧥', name: 'Шкаф', real: 'wardrobe' }, { id: 'table', emoji: '🍽️', name: 'Стол', real: 'table' }, { id: 'armchair', emoji: '🪑', name: 'Кресло', real: 'armchair' }, { id: 'washer', emoji: '👕', name: 'Стиралка', real: 'washer' } ], en: [ { id: 'sofa', emoji: '🛋️', name: 'Sofa', real: 'sofa' }, { id: 'bed', emoji: '🛏️', name: 'Bed', real: 'bed' }, { id: 'toilet', emoji: '🚽', name: 'Toilet', real: 'toilet' }, { id: 'shower', emoji: '🚿', name: 'Shower', real: 'shower' }, { id: 'stairs', emoji: '🪜', name: 'Stairs', real: 'stairs' }, { id: 'kitchen', emoji: '🧱', name: 'Kitchen island', real: 'kitchen' }, { id: 'ac', emoji: '❄️', name: 'AC', real: 'ac' }, { id: 'sauna', emoji: '🔥', name: 'Sauna', real: 'sauna' }, { id: 'wardrobe', emoji: '🧥', name: 'Wardrobe', real: 'wardrobe' }, { id: 'table', emoji: '🍽️', name: 'Table', real: 'table' }, { id: 'armchair', emoji: '🪑', name: 'Armchair', real: 'armchair' }, { id: 'washer', emoji: '👕', name: 'Washer', real: 'washer' } ] };
+    const furnitureItems = [ { id: 'sofa', nameRu: 'Диван', nameEn: 'Sofa' }, { id: 'bed', nameRu: 'Кровать', nameEn: 'Bed' }, { id: 'wardrobe', nameRu: 'Шкаф', nameEn: 'Wardrobe' }, { id: 'table', nameRu: 'Стол', nameEn: 'Table' }, { id: 'lighting', nameRu: 'Освещение', nameEn: 'Lighting' }, { id: 'textile', nameRu: 'Текстиль', nameEn: 'Textile' } ];
+    const electricLevels = [ { id: 'econom', nameRu: 'Бюджетный', nameEn: 'Budget' }, { id: 'medium', nameRu: 'Средний', nameEn: 'Medium' }, { id: 'premium', nameRu: 'Высокий', nameEn: 'High' } ];
     let currentLang = 'ru', selectedObjectType = null, planImage = null, planObjects = [], scaleMMperPixel = null, doorCalibrationPoints = [], selectedFurniture = [], selectedElectric = null;
     let canvasWidth = 900, canvasHeight = 600;
     const canvas = document.getElementById('planCanvas'), ctx = canvas.getContext('2d'), canvasEn = document.getElementById('planCanvasEn');
     let ctxEn = canvasEn ? canvasEn.getContext('2d') : null;
-    function updateCanvasDimensions() { if (!canvas) return; canvasWidth = Math.min(900, canvas.parentElement.clientWidth); canvasHeight = canvasWidth * 0.7; canvas.width = canvasWidth; canvas.height = canvasHeight; if (canvasEn) { canvasEn.width = canvasWidth; canvasEn.height = canvasHeight; } }
-    function relToAbs(relX, relY, relW, relH) { return { x: relX * canvasWidth, y: relY * canvasHeight, w: relW * canvasWidth, h: relH * canvasHeight }; }
-    function absToRel(x, y, w, h) { return { relX: x / canvasWidth, relY: y / canvasHeight, relW: w / canvasWidth, relH: h / canvasHeight }; }
+
+    function updateCanvasDimensions() { if(!canvas)return; canvasWidth = Math.min(900, canvas.parentElement.clientWidth); canvasHeight = canvasWidth * 0.7; canvas.width = canvasWidth; canvas.height = canvasHeight; if(canvasEn) { canvasEn.width = canvasWidth; canvasEn.height = canvasHeight; } }
+    function relToAbs(relX,relY,relW,relH){ return { x: relX*canvasWidth, y: relY*canvasHeight, w: relW*canvasWidth, h: relH*canvasHeight }; }
+    function absToRel(x,y,w,h){ return { relX: x/canvasWidth, relY: y/canvasHeight, relW: w/canvasWidth, relH: h/canvasHeight }; }
     function drawBoth() {
-        if (ctx) {
-            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-            if (planImage) { let scale = Math.min(canvasWidth / planImage.width, canvasHeight / planImage.height), dw = planImage.width * scale, dh = planImage.height * scale, dx = (canvasWidth - dw) / 2, dy = (canvasHeight - dh) / 2; ctx.drawImage(planImage, dx, dy, dw, dh); }
-            else { ctx.fillStyle = '#ddd'; ctx.fillRect(0, 0, canvasWidth, canvasHeight); ctx.fillStyle = '#666'; ctx.font = '16px sans-serif'; ctx.fillText(currentLang === 'ru' ? 'Загрузите план' : 'Upload plan', 20, 50); }
-            for (let o of planObjects) { let abs = relToAbs(o.relX, o.relY, o.relW, o.relH); ctx.fillStyle = 'rgba(232,73,29,0.7)'; ctx.fillRect(abs.x, abs.y, abs.w, abs.h); ctx.strokeStyle = '#fff'; ctx.strokeRect(abs.x, abs.y, abs.w, abs.h); ctx.fillStyle = 'white'; ctx.font = '14px sans-serif'; ctx.fillText(o.emoji, abs.x + 5, abs.y + abs.h - 8); ctx.font = '9px sans-serif'; ctx.fillStyle = 'white'; ctx.fillText(o.name, abs.x + 5, abs.y + 14); }
-            if (doorCalibrationPoints.length === 1) { ctx.fillStyle = 'red'; ctx.beginPath(); ctx.arc(doorCalibrationPoints[0].x, doorCalibrationPoints[0].y, 8, 0, 2 * Math.PI); ctx.fill(); }
+        if(ctx){
+            ctx.clearRect(0,0,canvasWidth,canvasHeight);
+            if(planImage){ let scale = Math.min(canvasWidth/planImage.width, canvasHeight/planImage.height), dw = planImage.width*scale, dh = planImage.height*scale, dx = (canvasWidth-dw)/2, dy = (canvasHeight-dh)/2; ctx.drawImage(planImage,dx,dy,dw,dh); }
+            else { ctx.fillStyle='#ddd'; ctx.fillRect(0,0,canvasWidth,canvasHeight); ctx.fillStyle='#666'; ctx.font='16px sans-serif'; ctx.fillText(currentLang==='ru'?'Загрузите план':'Upload plan',20,50); }
+            for(let o of planObjects){ let abs = relToAbs(o.relX,o.relY,o.relW,o.relH); ctx.fillStyle='rgba(232,73,29,0.7)'; ctx.fillRect(abs.x,abs.y,abs.w,abs.h); ctx.strokeStyle='#fff'; ctx.strokeRect(abs.x,abs.y,abs.w,abs.h); ctx.fillStyle='white'; ctx.font='14px sans-serif'; ctx.fillText(o.emoji,abs.x+5,abs.y+abs.h-8); ctx.font='9px sans-serif'; ctx.fillText(o.name,abs.x+5,abs.y+14); }
+            if(doorCalibrationPoints.length===1){ ctx.fillStyle='red'; ctx.beginPath(); ctx.arc(doorCalibrationPoints[0].x,doorCalibrationPoints[0].y,8,0,2*Math.PI); ctx.fill(); }
         }
-        if (ctxEn && canvasEn && canvas) { canvasEn.width = canvasWidth; canvasEn.height = canvasHeight; ctxEn.drawImage(canvas, 0, 0); }
+        if(ctxEn && canvasEn && canvas){ canvasEn.width = canvasWidth; canvasEn.height = canvasHeight; ctxEn.drawImage(canvas,0,0); }
     }
-    function computeScaleFromDoor(p1, p2) { let doorPixels = Math.hypot(p2.x - p1.x, p2.y - p1.y); if (doorPixels < 5) return false; scaleMMperPixel = 800 / doorPixels; let statusDiv = currentLang === 'ru' ? document.getElementById('calibStatus') : document.getElementById('calibStatusEn'); if (statusDiv) statusDiv.innerHTML = (currentLang === 'ru' ? '✅ Дверь откалибрована! ' : '✅ Door calibrated! ') + Math.round(scaleMMperPixel * 10) / 10 + (currentLang === 'ru' ? ' мм/пиксель.' : ' mm/pixel.'); return true; }
-    function addObjectAt(absX, absY) {
-        if (!selectedObjectType) { alert(currentLang === 'ru' ? 'Выберите объект' : 'Select an object'); return; }
-        if (!scaleMMperPixel) { alert(currentLang === 'ru' ? 'Сначала откалибруйте дверь' : 'Calibrate the door first'); return; }
-        let template = objectsList[currentLang].find(c => c.id === selectedObjectType); if (!template) return;
-        let real = REAL_SIZES_MM[template.real], wPx = real.w / scaleMMperPixel, hPx = real.h / scaleMMperPixel;
-        let x = absX - wPx / 2, y = absY - hPx / 2; x = Math.min(Math.max(0, x), canvasWidth - wPx); y = Math.min(Math.max(0, y), canvasHeight - hPx);
-        let rel = absToRel(x, y, wPx, hPx);
+    function computeScaleFromDoor(p1,p2){ let doorPixels = Math.hypot(p2.x-p1.x,p2.y-p1.y); if(doorPixels<5)return false; scaleMMperPixel = 800/doorPixels; let statusDiv = currentLang==='ru'?document.getElementById('calibStatus'):document.getElementById('calibStatusEn'); if(statusDiv) statusDiv.innerHTML = (currentLang==='ru'?'✅ Дверь откалибрована! ':'✅ Door calibrated! ')+Math.round(scaleMMperPixel*10)/10+(currentLang==='ru'?' мм/пиксель.':' mm/pixel.'); return true; }
+    function addObjectAt(absX,absY){
+        if(!selectedObjectType){ alert(currentLang==='ru'?'Выберите объект':'Select an object'); return; }
+        if(!scaleMMperPixel){ alert(currentLang==='ru'?'Сначала откалибруйте дверь':'Calibrate the door first'); return; }
+        let template = objectsList[currentLang].find(c=>c.id===selectedObjectType); if(!template)return;
+        let real = REAL_SIZES_MM[template.real], wPx = real.w/scaleMMperPixel, hPx = real.h/scaleMMperPixel, x = absX - wPx/2, y = absY - hPx/2;
+        x = Math.min(Math.max(0,x),canvasWidth-wPx); y = Math.min(Math.max(0,y),canvasHeight-hPx);
+        let rel = absToRel(x,y,wPx,hPx);
         planObjects.push({ id: Date.now(), emoji: template.emoji, name: template.name, realW_mm: real.w, realH_mm: real.h, relX: rel.relX, relY: rel.relY, relW: rel.relW, relH: rel.relH });
         drawBoth();
     }
-    function findObj(absX, absY) { for (let i = planObjects.length - 1; i >= 0; i--) { let o = planObjects[i], abs = relToAbs(o.relX, o.relY, o.relW, o.relH); if (absX >= abs.x && absX <= abs.x + abs.w && absY >= abs.y && absY <= abs.y + abs.h) return i; } return -1; }
-    let dragIdx = -1, dragOffsetX = 0, dragOffsetY = 0;
-    function onStart(e) { e.preventDefault(); let rect = canvas.getBoundingClientRect(), sx = canvasWidth / rect.width, sy = canvasHeight / rect.height, cx, cy; if (e.touches) { cx = e.touches[0].clientX; cy = e.touches[0].clientY; } else { cx = e.clientX; cy = e.clientY; } let absX = (cx - rect.left) * sx, absY = (cy - rect.top) * sy; let idx = findObj(absX, absY); if (idx !== -1) { dragIdx = idx; let objAbs = relToAbs(planObjects[idx].relX, planObjects[idx].relY, planObjects[idx].relW, planObjects[idx].relH); dragOffsetX = absX - objAbs.x; dragOffsetY = absY - objAbs.y; } else { addObjectAt(absX, absY); } }
-    function onMove(e) { if (dragIdx === -1) return; e.preventDefault(); let rect = canvas.getBoundingClientRect(), sx = canvasWidth / rect.width, sy = canvasHeight / rect.height, cx, cy; if (e.touches) { cx = e.touches[0].clientX; cy = e.touches[0].clientY; } else { cx = e.clientX; cy = e.clientY; } let absX = (cx - rect.left) * sx, absY = (cy - rect.top) * sy; let obj = planObjects[dragIdx], objAbs = relToAbs(obj.relX, obj.relY, obj.relW, obj.relH), newAbsX = absX - dragOffsetX, newAbsY = absY - dragOffsetY; newAbsX = Math.min(Math.max(0, newAbsX), canvasWidth - objAbs.w); newAbsY = Math.min(Math.max(0, newAbsY), canvasHeight - objAbs.h); let newRel = absToRel(newAbsX, newAbsY, objAbs.w, objAbs.h); obj.relX = newRel.relX; obj.relY = newRel.relY; drawBoth(); }
-    function onEnd(e) { dragIdx = -1; }
-    canvas.addEventListener('mousedown', onStart); canvas.addEventListener('mousemove', onMove); canvas.addEventListener('mouseup', onEnd); canvas.addEventListener('touchstart', onStart); canvas.addEventListener('touchmove', onMove); canvas.addEventListener('touchend', onEnd);
-    function loadImage(file) { let r = new FileReader(); r.onload = e => { let img = new Image(); img.onload = () => { planImage = img; scaleMMperPixel = null; doorCalibrationPoints = []; planObjects = []; drawBoth(); let statusDiv = currentLang === 'ru' ? document.getElementById('calibStatus') : document.getElementById('calibStatusEn'); if (statusDiv) statusDiv.innerHTML = currentLang === 'ru' ? '🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма' : '🚪 Click "Calibrate door", then tap START and END of doorway'; }; img.src = e.target.result; }; r.readAsDataURL(file); }
-    function setupButtons() {
-        const cameraBtn = document.getElementById('cameraBtn'), loadBtn = document.getElementById('loadBtn'), calibrateBtn = document.getElementById('calibrateDoorBtn'), resetBtn = document.getElementById('resetObjBtn'), cameraBtnEn = document.getElementById('cameraBtnEn'), loadBtnEn = document.getElementById('loadBtnEn'), calibrateBtnEn = document.getElementById('calibrateDoorBtnEn'), resetBtnEn = document.getElementById('resetObjBtnEn');
-        const handlerCamera = () => { let inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.capture = 'environment'; inp.onchange = e => { if (e.target.files[0]) loadImage(e.target.files[0]); }; inp.click(); };
-        const handlerLoad = () => { let inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.onchange = e => { if (e.target.files[0]) loadImage(e.target.files[0]); }; inp.click(); };
-        const handlerReset = () => { planObjects = []; drawBoth(); };
-        const handlerCalibrate = () => { if (!planImage) { alert(currentLang === 'ru' ? 'Сначала загрузите план' : 'Upload plan first'); return; } doorCalibrationPoints = []; let statusDiv = currentLang === 'ru' ? document.getElementById('calibStatus') : document.getElementById('calibStatusEn'); if (statusDiv) statusDiv.innerHTML = currentLang === 'ru' ? '🔴 Нажмите на НАЧАЛО дверного проёма...' : '🔴 Tap START of doorway...'; let tempHandler = (e) => { let rect = canvas.getBoundingClientRect(), sx = canvasWidth / rect.width, sy = canvasHeight / rect.height, cx, cy; if (e.touches) { cx = e.touches[0].clientX; cy = e.touches[0].clientY; } else { cx = e.clientX; cy = e.clientY; } let absX = (cx - rect.left) * sx, absY = (cy - rect.top) * sy; doorCalibrationPoints.push({ x: absX, y: absY }); drawBoth(); if (doorCalibrationPoints.length === 1 && statusDiv) statusDiv.innerHTML = currentLang === 'ru' ? '🔴 Теперь нажмите на КОНЕЦ дверного проёма' : '🔴 Now tap END of doorway'; if (doorCalibrationPoints.length === 2) { computeScaleFromDoor(doorCalibrationPoints[0], doorCalibrationPoints[1]); canvas.removeEventListener('click', tempHandler); canvas.removeEventListener('touchstart', tempHandler); } }; canvas.addEventListener('click', tempHandler); canvas.addEventListener('touchstart', tempHandler); };
-        if (cameraBtn) cameraBtn.onclick = handlerCamera; if (cameraBtnEn) cameraBtnEn.onclick = handlerCamera; if (loadBtn) loadBtn.onclick = handlerLoad; if (loadBtnEn) loadBtnEn.onclick = handlerLoad; if (resetBtn) resetBtn.onclick = handlerReset; if (resetBtnEn) resetBtnEn.onclick = handlerReset; if (calibrateBtn) calibrateBtn.onclick = handlerCalibrate; if (calibrateBtnEn) calibrateBtnEn.onclick = handlerCalibrate;
+    function findObj(absX,absY){ for(let i=planObjects.length-1;i>=0;i--){ let o=planObjects[i], abs=relToAbs(o.relX,o.relY,o.relW,o.relH); if(absX>=abs.x && absX<=abs.x+abs.w && absY>=abs.y && absY<=abs.y+abs.h) return i; } return -1; }
+    let dragIdx=-1, dragOffsetX=0, dragOffsetY=0;
+    function onStart(e){
+        e.preventDefault(); let rect=canvas.getBoundingClientRect(), sx=canvasWidth/rect.width, sy=canvasHeight/rect.height, cx,cy;
+        if(e.touches){ cx=e.touches[0].clientX; cy=e.touches[0].clientY; } else { cx=e.clientX; cy=e.clientY; }
+        let absX=(cx-rect.left)*sx, absY=(cy-rect.top)*sy, idx=findObj(absX,absY);
+        if(idx!==-1){ dragIdx=idx; let objAbs=relToAbs(planObjects[idx].relX,planObjects[idx].relY,planObjects[idx].relW,planObjects[idx].relH); dragOffsetX=absX-objAbs.x; dragOffsetY=absY-objAbs.y; }
+        else addObjectAt(absX,absY);
     }
-    function renderObjects() { let container = document.getElementById('objectsGridRu'), containerEn = document.getElementById('objectsGridEn'); if (!container) return; let list = objectsList.ru; container.innerHTML = ''; list.forEach(obj => { let div = document.createElement('div'); div.className = 'object-card'; if (selectedObjectType === obj.id) div.classList.add('selected'); div.innerHTML = `<span class="object-emoji">${obj.emoji}</span><span>${obj.name}</span>`; div.onclick = () => { selectedObjectType = obj.id; document.querySelectorAll('#objectsGridRu .object-card, #objectsGridEn .object-card').forEach(el => el.classList.remove('selected')); div.classList.add('selected'); if (containerEn) { let targetDiv = Array.from(containerEn.children).find(child => child.innerText.includes(obj.emoji)); if (targetDiv) targetDiv.classList.add('selected'); } }; container.appendChild(div); }); if (containerEn) { let listEn = objectsList.en; containerEn.innerHTML = ''; listEn.forEach(obj => { let div = document.createElement('div'); div.className = 'object-card'; if (selectedObjectType === obj.id) div.classList.add('selected'); div.innerHTML = `<span class="object-emoji">${obj.emoji}</span><span>${obj.name}</span>`; div.onclick = () => { selectedObjectType = obj.id; document.querySelectorAll('#objectsGridRu .object-card, #objectsGridEn .object-card').forEach(el => el.classList.remove('selected')); div.classList.add('selected'); if (container) { let targetDiv = Array.from(container.children).find(child => child.innerText.includes(obj.emoji)); if (targetDiv) targetDiv.classList.add('selected'); } }; containerEn.appendChild(div); }); } }
-    function renderFurniture() { let container = document.getElementById('furnitureChecklistRu'), containerEn = document.getElementById('furnitureChecklistEn'); if (!container) return; container.innerHTML = ''; furnitureItems.forEach(f => { let label = document.createElement('label'), cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = f.id; cb.onchange = e => { if (e.target.checked) { if (!selectedFurniture.includes(f.id)) selectedFurniture.push(f.id); } else { selectedFurniture = selectedFurniture.filter(i => i !== f.id); } if (containerEn) { let cbEn = containerEn.querySelector(`input[value="${f.id}"]`); if (cbEn) cbEn.checked = e.target.checked; } }; label.appendChild(cb); label.appendChild(document.createTextNode(f.nameRu)); container.appendChild(label); }); if (containerEn) { containerEn.innerHTML = ''; furnitureItems.forEach(f => { let label = document.createElement('label'), cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = f.id; cb.checked = selectedFurniture.includes(f.id); cb.onchange = e => { if (e.target.checked) { if (!selectedFurniture.includes(f.id)) selectedFurniture.push(f.id); } else { selectedFurniture = selectedFurniture.filter(i => i !== f.id); } if (container) { let cbRu = container.querySelector(`input[value="${f.id}"]`); if (cbRu) cbRu.checked = e.target.checked; } }; label.appendChild(cb); label.appendChild(document.createTextNode(f.nameEn)); containerEn.appendChild(label); }); } }
-    function renderElectric() { let container = document.getElementById('electricLevelsRu'), containerEn = document.getElementById('electricLevelsEn'); if (!container) return; container.innerHTML = ''; electricLevels.forEach(l => { let label = document.createElement('label'), radio = document.createElement('input'); radio.type = 'radio'; radio.name = 'electric'; radio.value = l.id; radio.checked = selectedElectric === l.id; radio.onchange = e => { if (e.target.checked) selectedElectric = l.id; if (containerEn) { let radioEn = containerEn.querySelector(`input[value="${l.id}"]`); if (radioEn) radioEn.checked = true; } }; label.appendChild(radio); label.appendChild(document.createTextNode(l.nameRu)); container.appendChild(label); }); if (containerEn) { containerEn.innerHTML = ''; electricLevels.forEach(l => { let label = document.createElement('label'), radio = document.createElement('input'); radio.type = 'radio'; radio.name = 'electric'; radio.value = l.id; radio.checked = selectedElectric === l.id; radio.onchange = e => { if (e.target.checked) selectedElectric = l.id; if (container) { let radioRu = container.querySelector(`input[value="${l.id}"]`); if (radioRu) radioRu.checked = true; } }; label.appendChild(radio); label.appendChild(document.createTextNode(l.nameEn)); containerEn.appendChild(label); }); } }
-    function setupSend() { let sendBtn = document.getElementById('sendFinalBtnRu'), sendBtnEn = document.getElementById('sendFinalBtnEn'); const handlerSend = () => { let comment = currentLang === 'ru' ? document.getElementById('commentRu').value : document.getElementById('commentEn').value, furnitureWish = currentLang === 'ru' ? document.getElementById('furnitureWishRu').value : document.getElementById('furnitureWishEn').value, electricWish = currentLang === 'ru' ? document.getElementById('electricWishRu').value : document.getElementById('electricWishEn').value, data = { lang: currentLang, planImage: planImage?.src || null, planObjects: planObjects, comment: comment, furniture: selectedFurniture, furnitureWish: furnitureWish, electricLevel: selectedElectric, electricWish: electricWish }; console.log('📤 Дизайнеру:', data); alert(currentLang === 'ru' ? 'Заказ отправлен! Дизайнер свяжется.' : 'Order sent! Designer will contact you.'); }; if (sendBtn) sendBtn.onclick = handlerSend; if (sendBtnEn) sendBtnEn.onclick = handlerSend; }
-    function setupNav() { document.querySelectorAll('.nav-btn').forEach(btn => { btn.addEventListener('click', () => { let sectionId = btn.dataset.nav, element = document.getElementById(sectionId + (currentLang === 'en' ? '-en' : '')); if (element) element.scrollIntoView({ behavior: 'smooth' }); }); }); }
-    function updateNavButtons() { const texts = navTexts[currentLang]; document.getElementById('navPlanBtn').innerText = texts.plan; document.getElementById('navObjectsBtn').innerText = texts.objects; document.getElementById('navFurnitureBtn').innerText = texts.furniture; document.getElementById('navElectricBtn').innerText = texts.electric; document.getElementById('navSendBtn').innerText = texts.send; }
-    function setLanguage(lang) { currentLang = lang; document.getElementById('ru-content').classList.toggle('active', lang === 'ru'); document.getElementById('en-content').classList.toggle('active', lang === 'en'); document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang)); let pwaText = document.getElementById('pwaBtnText'); if (pwaText) pwaText.innerText = lang === 'ru' ? 'Установить приложение' : 'Install app'; updateNavButtons(); drawBoth(); }
-    document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
-    window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
-    
-    // ========== PWA УСТАНОВКА (ИСПРАВЛЕНА) ==========
+    function onMove(e){
+        if(dragIdx===-1)return; e.preventDefault(); let rect=canvas.getBoundingClientRect(), sx=canvasWidth/rect.width, sy=canvasHeight/rect.height, cx,cy;
+        if(e.touches){ cx=e.touches[0].clientX; cy=e.touches[0].clientY; } else { cx=e.clientX; cy=e.clientY; }
+        let absX=(cx-rect.left)*sx, absY=(cy-rect.top)*sy, obj=planObjects[dragIdx], objAbs=relToAbs(obj.relX,obj.relY,obj.relW,obj.relH);
+        let newAbsX=absX-dragOffsetX, newAbsY=absY-dragOffsetY;
+        newAbsX=Math.min(Math.max(0,newAbsX),canvasWidth-objAbs.w); newAbsY=Math.min(Math.max(0,newAbsY),canvasHeight-objAbs.h);
+        let newRel=absToRel(newAbsX,newAbsY,objAbs.w,objAbs.h); obj.relX=newRel.relX; obj.relY=newRel.relY; drawBoth();
+    }
+    function onEnd(e){ dragIdx=-1; }
+    canvas.addEventListener('mousedown',onStart); canvas.addEventListener('mousemove',onMove); canvas.addEventListener('mouseup',onEnd); canvas.addEventListener('touchstart',onStart); canvas.addEventListener('touchmove',onMove); canvas.addEventListener('touchend',onEnd);
+    function loadImage(file){ let r=new FileReader(); r.onload=e=>{ let img=new Image(); img.onload=()=>{ planImage=img; scaleMMperPixel=null; doorCalibrationPoints=[]; planObjects=[]; drawBoth(); let statusDiv=currentLang==='ru'?document.getElementById('calibStatus'):document.getElementById('calibStatusEn'); if(statusDiv) statusDiv.innerHTML=currentLang==='ru'?'🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма':'🚪 Click "Calibrate door", then tap START and END of doorway'; }; img.src=e.target.result; }; r.readAsDataURL(file); }
+    function setupButtons(){
+        const handlerCamera=()=>{ let inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.capture='environment'; inp.onchange=e=>{ if(e.target.files[0]) loadImage(e.target.files[0]); }; inp.click(); };
+        const handlerLoad=()=>{ let inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.onchange=e=>{ if(e.target.files[0]) loadImage(e.target.files[0]); }; inp.click(); };
+        const handlerReset=()=>{ planObjects=[]; drawBoth(); };
+        const handlerCalibrate=()=>{ if(!planImage){ alert(currentLang==='ru'?'Сначала загрузите план':'Upload plan first'); return; } doorCalibrationPoints=[]; let statusDiv=currentLang==='ru'?document.getElementById('calibStatus'):document.getElementById('calibStatusEn'); if(statusDiv) statusDiv.innerHTML=currentLang==='ru'?'🔴 Нажмите на НАЧАЛО дверного проёма...':'🔴 Tap START of doorway...'; let tempHandler=(e)=>{ let rect=canvas.getBoundingClientRect(), sx=canvasWidth/rect.width, sy=canvasHeight/rect.height, cx,cy; if(e.touches){ cx=e.touches[0].clientX; cy=e.touches[0].clientY; } else { cx=e.clientX; cy=e.clientY; } let absX=(cx-rect.left)*sx, absY=(cy-rect.top)*sy; doorCalibrationPoints.push({x:absX,y:absY}); drawBoth(); if(doorCalibrationPoints.length===1 && statusDiv) statusDiv.innerHTML=currentLang==='ru'?'🔴 Теперь нажмите на КОНЕЦ дверного проёма':'🔴 Now tap END of doorway'; if(doorCalibrationPoints.length===2){ computeScaleFromDoor(doorCalibrationPoints[0],doorCalibrationPoints[1]); canvas.removeEventListener('click',tempHandler); canvas.removeEventListener('touchstart',tempHandler); } }; canvas.addEventListener('click',tempHandler); canvas.addEventListener('touchstart',tempHandler); };
+        document.getElementById('cameraBtn')?.addEventListener('click',handlerCamera); document.getElementById('cameraBtnEn')?.addEventListener('click',handlerCamera);
+        document.getElementById('loadBtn')?.addEventListener('click',handlerLoad); document.getElementById('loadBtnEn')?.addEventListener('click',handlerLoad);
+        document.getElementById('resetObjBtn')?.addEventListener('click',handlerReset); document.getElementById('resetObjBtnEn')?.addEventListener('click',handlerReset);
+        document.getElementById('calibrateDoorBtn')?.addEventListener('click',handlerCalibrate); document.getElementById('calibrateDoorBtnEn')?.addEventListener('click',handlerCalibrate);
+    }
+    function renderObjects(){
+        let container=document.getElementById('objectsGridRu'), containerEn=document.getElementById('objectsGridEn'); if(!container)return;
+        objectsList.ru.forEach(obj=>{ let div=document.createElement('div'); div.className='object-card'; if(selectedObjectType===obj.id) div.classList.add('selected'); div.innerHTML=`<span class="object-emoji">${obj.emoji}</span><span>${obj.name}</span>`; div.onclick=()=>{ selectedObjectType=obj.id; document.querySelectorAll('#objectsGridRu .object-card, #objectsGridEn .object-card').forEach(el=>el.classList.remove('selected')); div.classList.add('selected'); if(containerEn){ let targetDiv=Array.from(containerEn.children).find(child=>child.innerText.includes(obj.emoji)); if(targetDiv) targetDiv.classList.add('selected'); } }; container.appendChild(div); });
+        if(containerEn){ objectsList.en.forEach(obj=>{ let div=document.createElement('div'); div.className='object-card'; if(selectedObjectType===obj.id) div.classList.add('selected'); div.innerHTML=`<span class="object-emoji">${obj.emoji}</span><span>${obj.name}</span>`; div.onclick=()=>{ selectedObjectType=obj.id; document.querySelectorAll('#objectsGridRu .object-card, #objectsGridEn .object-card').forEach(el=>el.classList.remove('selected')); div.classList.add('selected'); if(container){ let targetDiv=Array.from(container.children).find(child=>child.innerText.includes(obj.emoji)); if(targetDiv) targetDiv.classList.add('selected'); } }; containerEn.appendChild(div); }); }
+    }
+    function renderFurniture(){
+        let container=document.getElementById('furnitureChecklistRu'), containerEn=document.getElementById('furnitureChecklistEn'); if(!container)return;
+        furnitureItems.forEach(f=>{ let label=document.createElement('label'), cb=document.createElement('input'); cb.type='checkbox'; cb.value=f.id; cb.onchange=e=>{ if(e.target.checked){ if(!selectedFurniture.includes(f.id)) selectedFurniture.push(f.id); } else selectedFurniture=selectedFurniture.filter(i=>i!==f.id); if(containerEn){ let cbEn=containerEn.querySelector(`input[value="${f.id}"]`); if(cbEn) cbEn.checked=e.target.checked; } }; label.appendChild(cb); label.appendChild(document.createTextNode(f.nameRu)); container.appendChild(label); });
+        if(containerEn){ furnitureItems.forEach(f=>{ let label=document.createElement('label'), cb=document.createElement('input'); cb.type='checkbox'; cb.value=f.id; cb.checked=selectedFurniture.includes(f.id); cb.onchange=e=>{ if(e.target.checked){ if(!selectedFurniture.includes(f.id)) selectedFurniture.push(f.id); } else selectedFurniture=selectedFurniture.filter(i=>i!==f.id); if(container){ let cbRu=container.querySelector(`input[value="${f.id}"]`); if(cbRu) cbRu.checked=e.target.checked; } }; label.appendChild(cb); label.appendChild(document.createTextNode(f.nameEn)); containerEn.appendChild(label); }); }
+    }
+    function renderElectric(){
+        let container=document.getElementById('electricLevelsRu'), containerEn=document.getElementById('electricLevelsEn'); if(!container)return;
+        electricLevels.forEach(l=>{ let label=document.createElement('label'), radio=document.createElement('input'); radio.type='radio'; radio.name='electric'; radio.value=l.id; radio.checked=selectedElectric===l.id; radio.onchange=e=>{ if(e.target.checked) selectedElectric=l.id; if(containerEn){ let radioEn=containerEn.querySelector(`input[value="${l.id}"]`); if(radioEn) radioEn.checked=true; } }; label.appendChild(radio); label.appendChild(document.createTextNode(l.nameRu)); container.appendChild(label); });
+        if(containerEn){ electricLevels.forEach(l=>{ let label=document.createElement('label'), radio=document.createElement('input'); radio.type='radio'; radio.name='electric'; radio.value=l.id; radio.checked=selectedElectric===l.id; radio.onchange=e=>{ if(e.target.checked) selectedElectric=l.id; if(container){ let radioRu=container.querySelector(`input[value="${l.id}"]`); if(radioRu) radioRu.checked=true; } }; label.appendChild(radio); label.appendChild(document.createTextNode(l.nameEn)); containerEn.appendChild(label); }); }
+    }
+    function setupSend(){
+        let handler=()=>{ let comment=currentLang==='ru'?document.getElementById('commentRu').value:document.getElementById('commentEn').value, furnitureWish=currentLang==='ru'?document.getElementById('furnitureWishRu').value:document.getElementById('furnitureWishEn').value, electricWish=currentLang==='ru'?document.getElementById('electricWishRu').value:document.getElementById('electricWishEn').value; console.log('📤 Дизайнеру:',{lang:currentLang,planImage:planImage?.src||null,planObjects,comment,furniture:selectedFurniture,furnitureWish,electricLevel:selectedElectric,electricWish}); alert(currentLang==='ru'?'Заказ отправлен! Дизайнер свяжется.':'Order sent! Designer will contact you.'); };
+        document.getElementById('sendFinalBtnRu')?.addEventListener('click',handler); document.getElementById('sendFinalBtnEn')?.addEventListener('click',handler);
+    }
+    function setupNav(){ document.querySelectorAll('.nav-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ let sectionId=btn.dataset.nav, element=document.getElementById(sectionId+(currentLang==='en'?'-en':'')); if(element) element.scrollIntoView({behavior:'smooth'}); }); }); }
+    function updateNavButtons(){ let texts=navTexts[currentLang]; document.getElementById('navPlanBtn').innerText=texts.plan; document.getElementById('navObjectsBtn').innerText=texts.objects; document.getElementById('navFurnitureBtn').innerText=texts.furniture; document.getElementById('navElectricBtn').innerText=texts.electric; document.getElementById('navSendBtn').innerText=texts.send; }
+    function setLanguage(lang){
+        currentLang=lang; document.getElementById('ru-content').classList.toggle('active',lang==='ru'); document.getElementById('en-content').classList.toggle('active',lang==='en'); document.querySelectorAll('.lang-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.lang===lang));
+        let pwaText=document.getElementById('pwaBtnText'); if(pwaText) pwaText.innerText=lang==='ru'?'Установить приложение':'Install app';
+        let tooltip=document.getElementById('pwaTooltip'); if(tooltip) tooltip.innerHTML=lang==='ru'?'💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».':'💡 Click — install as app.<br>• Chrome/Edge: dialog appears.<br>• iPhone: Share → Add to Home Screen.';
+        updateNavButtons(); drawBoth();
+    }
+    document.querySelectorAll('.lang-btn').forEach(btn=>btn.addEventListener('click',()=>setLanguage(btn.dataset.lang)));
+    window.addEventListener('resize',()=>{ updateCanvasDimensions(); drawBoth(); });
+
+    // ========== PWA МЕХАНИЗМ 1:1 ИЗ ЭТАЛОНА HM&SA ==========
     let deferredPrompt;
-    
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        const installIcon = document.getElementById('pwaInstallIcon');
-        if (installIcon) installIcon.style.display = 'inline-flex';
-        console.log('beforeinstallprompt сработал');
+        console.log('beforeinstallprompt received');
     });
-    
-    const installIcon = document.getElementById('pwaInstallIcon');
-    if (installIcon) {
-        installIcon.addEventListener('click', async (e) => {
-            e.preventDefault();
-            if (!deferredPrompt) {
-                if (window.matchMedia('(display-mode: standalone)').matches) {
-                    // Уже установлено
-                } else if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-                    alert('Нажмите Поделиться → На экран "Домой"');
-                } else if (navigator.userAgent.includes('Android')) {
-                    alert('Нажмите ⋮ → Установить приложение');
-                } else {
-                    alert('Установите вручную через меню браузера');
-                }
-                return;
-            }
-            
+    document.getElementById('pwaInstallIcon').addEventListener('click', async () => {
+        if (deferredPrompt) {
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log('Результат установки:', outcome);
-            
-            if (outcome === 'accepted') {
-                console.log('PWA установлено успешно');
-            } else {
-                console.log('Пользователь отменил установку');
-            }
+            await deferredPrompt.userChoice;
             deferredPrompt = null;
-        });
-    }
-    
-    // Регистрация Service Worker
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js', { scope: '/' })
-            .then(reg => console.log('SW registered:', reg))
-            .catch(err => console.error('SW error:', err));
-    }
-    
+        }
+        // нет alert, нет инструкции — полная тишина, если deferredPrompt отсутствует
+    });
+    // =====================================================
+
+    if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { scope: './' }).then(reg=>console.log('SW registered')).catch(err=>console.error('SW error',err));
     updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();
 </script>
 </body>
