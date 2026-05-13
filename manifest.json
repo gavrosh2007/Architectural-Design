@@ -1,8 +1,8 @@
 {
   "name": "HM&AD architectural design",
   "short_name": "HM&AD",
-  "start_url": "/Architectural-Design/",
-  "scope": "/Architectural-Design/",
+  "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "theme_color": "#e8491d",
   "background_color": "#ffffff",
