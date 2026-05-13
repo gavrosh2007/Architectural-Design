@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hmad-v6';
+const CACHE_NAME = 'hmad-v7';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -16,6 +16,16 @@ self.addEventListener('install', event => {
   );
 });
 
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys => Promise.all(
+      keys.map(key => {
+        if (key !== CACHE_NAME) return caches.delete(key);
+      })
+    )).then(() => self.clients.claim())
+  );
+});
+
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
@@ -28,15 +38,5 @@ self.addEventListener('fetch', event => {
           return new Response('Offline', { status: 503 });
         });
       })
-  );
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.map(key => {
-        if (key !== CACHE_NAME) return caches.delete(key);
-      })
-    )).then(() => self.clients.claim())
   );
 });
