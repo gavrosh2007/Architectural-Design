@@ -177,23 +177,38 @@
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
+        const installBtn = document.getElementById('pwaInstallIcon');
+        if (installBtn) installBtn.style.display = 'inline-flex';
     });
     
-    document.getElementById('pwaInstallIcon').addEventListener('click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
-            deferredPrompt = null;
-        } else {
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                // уже установлено, ничего не делаем
-            } else if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-                alert('Нажмите Поделиться → На экран "Домой"');
-            } else if (navigator.userAgent.includes('Android')) {
-                alert('Нажмите ⋮ → Установить приложение');
+    const installIcon = document.getElementById('pwaInstallIcon');
+    if (installIcon) {
+        installIcon.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('PWA установлено');
+                }
+                deferredPrompt = null;
+            } else {
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                    // уже в режиме приложения
+                } else if (window.navigator.standalone === true) {
+                    // iOS
+                } else {
+                    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+                        alert('Нажмите Поделиться → На экран "Домой"');
+                    } else if (navigator.userAgent.includes('Android')) {
+                        alert('Нажмите ⋮ → Установить приложение');
+                    } else {
+                        alert(currentLang === 'ru' ? 'Установите вручную через меню браузера' : 'Install manually via browser menu');
+                    }
+                }
             }
-        }
-    });
+        });
+    }
     
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(reg => console.log('SW registered', reg)).catch(err => console.error('SW error', err));
     updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();
