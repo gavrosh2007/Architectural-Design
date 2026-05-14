@@ -354,21 +354,6 @@
     </style>
 </head>
 <body>
-<script>
-// PWA FIX: принудительная очистка старых SW при конфликте
-(async function() {
-    try {
-        if (!navigator.serviceWorker) return;
-        const regs = await navigator.serviceWorker.getRegistrations();
-        for (const reg of regs) {
-            if (reg.active) reg.active.postMessage('CLEANUP');
-            await reg.unregister();
-        }
-        const cacheKeys = await caches.keys();
-        await Promise.all(cacheKeys.map(k => caches.delete(k)));
-    } catch(e) { console.warn(e); }
-})();
-</script>
 <div class="bg-layer" id="bgLayer"></div>
 
 <div class="container">
@@ -379,7 +364,6 @@
                 <button class="lang-btn active" data-lang="ru">RU</button>
                 <button class="lang-btn" data-lang="en">EN</button>
             </div>
-            <!-- Кнопки навигации с пустыми текстами, заполняются скриптом -->
             <button class="nav-btn" data-nav="plan" id="navPlanBtn"></button>
             <button class="nav-btn" data-nav="objects" id="navObjectsBtn"></button>
             <button class="nav-btn" data-nav="furniture" id="navFurnitureBtn"></button>
@@ -398,7 +382,6 @@
         </div>
     </div>
 
-    <!-- РУССКАЯ ВЕРСИЯ -->
     <div id="ru-content" class="lang-content active">
         <div class="hero">
             <h1>HM&AD — Архитектурный дизайн</h1>
@@ -451,7 +434,6 @@
         <footer><span>© 2025 HM&AD | Архитектурный дизайн и планировка</span></footer>
     </div>
 
-    <!-- АНГЛИЙСКАЯ ВЕРСИЯ -->
     <div id="en-content" class="lang-content">
         <div class="hero">
             <h1>HM&AD — Architectural Design</h1>
@@ -506,13 +488,11 @@
 </div>
 
 <script>
-    // Тексты для навигационных кнопок
     const navTexts = {
         ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' },
         en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' }
     };
     
-    // ФОНЫ
     const backgrounds = ['bg1.jpg', 'bg2.jpg'];
     const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
     document.getElementById('bgLayer').style.backgroundImage = `url(${randomBg})`;
@@ -1111,34 +1091,18 @@
     });
     
     let deferredPrompt;
-    let installClicked = false;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        const btn = document.getElementById('pwa-install-icon');
-        if (btn) btn.style.opacity = '1';
-    });
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
     document.getElementById('pwa-install-icon')?.addEventListener('click', async () => {
-        if (installClicked) return;
-        installClicked = true;
         if (deferredPrompt) {
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
+            await deferredPrompt.userChoice;
             deferredPrompt = null;
-            if (outcome === 'accepted') {
-                localStorage.setItem('pwa_installed_clean', 'true');
-            }
         } else {
             alert(currentLang === 'ru' 
                 ? 'Для установки: Chrome/Edge — ⋮ → Установить приложение, iPhone — Поделиться → На экран "Домой"'
                 : 'To install: Chrome/Edge — ⋮ → Install app, iPhone — Share → Add to Home Screen');
         }
-        setTimeout(() => { installClicked = false; }, 3000);
     });
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        const installArea = document.querySelector('.install-area');
-        if (installArea) installArea.style.display = 'none';
-    }
     
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js', { scope: './' }).catch(err => console.warn('SW error:', err));
