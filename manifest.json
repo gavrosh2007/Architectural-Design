@@ -1,7 +1,8 @@
 {
   "name": "HM&AD architectural design",
   "short_name": "HM&AD",
-  "start_url": "./",
+  "id": "/hmad-v2",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "theme_color": "#e8491d",

@@ -159,7 +159,7 @@
     document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
     window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
     
-    // ========== PWA УСТАНОВКА (ИСПРАВЛЕНО ДЛЯ GITHUB PAGES) ==========
+    // ========== PWA УСТАНОВКА ==========
     let deferredPrompt;
     
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -167,6 +167,11 @@
         deferredPrompt = e;
         console.log('beforeinstallprompt сработал');
     });
+    
+    // Проверка, уже установлено ли
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('Уже установлено как PWA');
+    }
     
     const pwaInstallBtn = document.getElementById('pwaInstallIcon');
     if (pwaInstallBtn) {
@@ -177,9 +182,8 @@
                 console.log('Результат установки:', outcome);
                 deferredPrompt = null;
             } else {
-                if (window.matchMedia('(display-mode: standalone)').matches) {
-                    // уже установлено
-                } else {
+                // Показываем инструкцию только если PWA НЕ установлено
+                if (!window.matchMedia('(display-mode: standalone)').matches) {
                     alert(currentLang === 'ru' 
                         ? 'Для установки: Chrome/Edge — ⋮ → Установить приложение, iPhone — Поделиться → На экран "Домой"'
                         : 'To install: Chrome/Edge — ⋮ → Install app, iPhone — Share → Add to Home Screen');
@@ -188,7 +192,7 @@
         });
     }
     
-    // Регистрация Service Worker БЕЗ указания scope (браузер сам подставит правильный путь)
+    // Регистрация Service Worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').then(reg => {
             console.log('SW registered with scope:', reg.scope);

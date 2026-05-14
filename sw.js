@@ -1,6 +1,5 @@
-const CACHE_NAME = 'hmad-v24';
+const CACHE_NAME = 'hmad-v25';
 const urlsToCache = [
-  './',
   './index.html',
   './manifest.json',
   './icon-192x192.png',
