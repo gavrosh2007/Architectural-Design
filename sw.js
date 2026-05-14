@@ -1,9 +1,10 @@
-const CACHE_NAME = 'hmad-v22';
+const CACHE_NAME = 'hmad-v24';
 const urlsToCache = [
-  'index.html',
-  'manifest.json',
-  'icon-192x192.png',
-  'icon-512x512.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192x192.png',
+  './icon-512x512.png'
 ];
 
 self.addEventListener('install', event => {
