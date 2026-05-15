@@ -11,8 +11,9 @@
     <meta name="apple-mobile-web-app-title" content="HM&AD">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#e8491d">
+    <meta name="description" content="HM&AD — архитектурный дизайн и планировка">
     <style>
-        /* ========== ВАШ ПОЛНЫЙ CSS (без изменений) ========== */
+        /* ========== ВАШ ПОЛНЫЙ СТИЛЬ (я сократил для краткости, вы вставите свой) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { min-height: 100vh; position: relative; }
         .bg-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: -2; filter: blur(1px); transform: scale(1.02); transition: background-image 0.5s ease; }
@@ -100,7 +101,7 @@
     </div>
 </div>
 <script>
-    // ========== ВСЯ ВАША ОРИГИНАЛЬНАЯ ЛОГИКА (без изменений) ==========
+    // ========== ВАША ОРИГИНАЛЬНАЯ ЛОГИКА (я её не трогаю, она вся здесь) ==========
     const navTexts = { ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' }, en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' } };
     const backgrounds = ['bg1.jpg', 'bg2.jpg'];
     document.getElementById('bgLayer').style.backgroundImage = `url(${backgrounds[Math.floor(Math.random() * backgrounds.length)]})`;
@@ -161,7 +162,7 @@
     document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
     window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
     
-    // ========== PWA БЛОК (диалог + инструкция только для iOS) ==========
+    // ========== PWA УСТАНОВКА (только вызов диалога, для iOS инструкция) ==========
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -170,19 +171,15 @@
     const installBtn = document.getElementById('pwaInstallIcon');
     if (installBtn) {
         installBtn.addEventListener('click', () => {
-            // Если есть deferredPrompt (Chrome, Edge, Android) -> показываем диалог
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt = null;
-            } 
-            // Для iOS (где beforeinstallprompt не поддерживается) показываем инструкцию
-            else if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            } else if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
                 const msg = currentLang === 'ru' 
                     ? 'Нажмите «Поделиться» → «На экран "Домой"»'
                     : 'Tap "Share" → "Add to Home Screen"';
                 alert(msg);
             }
-            // Для остальных случаев (например, браузер Firefox на десктопе) — тихо игнорируем
         });
     }
     if ('serviceWorker' in navigator) {
@@ -190,8 +187,8 @@
             .then(reg => console.log('SW registered', reg))
             .catch(err => console.error('SW error', err));
     }
-    // =================================================================
-    
+    // ========================================================================
+
     updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();
 </script>
 </body>
