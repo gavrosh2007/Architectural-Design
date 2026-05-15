@@ -12,7 +12,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#e8491d">
     <style>
-        /* Ваш полный CSS без изменений (я его сократил для краткости, но вы вставите свой) */
+        /* ========== ВАШ ПОЛНЫЙ CSS (без изменений) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { min-height: 100vh; position: relative; }
         .bg-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: -2; filter: blur(1px); transform: scale(1.02); transition: background-image 0.5s ease; }
@@ -29,7 +29,6 @@
         .pwa-icon-btn { background: none; border: none; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; gap: 0.3rem; font-size: 0.9rem; font-weight: 600; color: #e8491d; transition: transform 0.05s; }
         .pwa-icon-btn:active { transform: scale(0.97); }
         .pwa-icon-btn img { width: 96px; height: 96px; border-radius: 12px; }
-        /* остальные стили — ваши, я их не трогаю */
         .hero { background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); border-radius: 32px; padding: 2rem; text-align: center; margin-bottom: 2rem; }
         .hero h1 { font-size: 2.5rem; color: #e8491d; text-shadow: 1px 1px 0 rgba(255,255,255,0.8); }
         .hero p { color: #1a1a1a; font-size: 1.2rem; margin-top: 0.5rem; }
@@ -81,7 +80,6 @@
             <span id="pwaBtnText">Установить приложение</span>
         </button>
     </div>
-    <!-- Здесь весь ваш ru и en контент, я не меняю -->
     <div id="ru-content" class="lang-content active">
         <div class="hero"><h1>HM&AD — Архитектурный дизайн</h1><p>Расставьте объекты на плане — дизайнер всё поймёт</p></div>
         <div id="plan" class="plan-area"><div class="canvas-container"><canvas id="planCanvas" width="900" height="600"></canvas></div><div class="button-group"><button class="btn" id="cameraBtn">📷 Снять план</button><button class="btn" id="loadBtn">📁 Загрузить план</button><button class="btn" id="calibrateDoorBtn" style="background:#2a6a4a">🚪 Калибровать дверь</button><button class="btn" id="resetObjBtn">🗑️ Очистить всё</button></div><div id="calibStatus" class="instruction">🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма</div></div>
@@ -102,7 +100,7 @@
     </div>
 </div>
 <script>
-    // ========== ВАША ПОЛНАЯ ЛОГИКА (я её не меняю, только добавляю PWA) ==========
+    // ========== ВСЯ ВАША ОРИГИНАЛЬНАЯ ЛОГИКА (без изменений) ==========
     const navTexts = { ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' }, en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' } };
     const backgrounds = ['bg1.jpg', 'bg2.jpg'];
     document.getElementById('bgLayer').style.backgroundImage = `url(${backgrounds[Math.floor(Math.random() * backgrounds.length)]})`;
@@ -163,53 +161,36 @@
     document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
     window.addEventListener('resize', () => { updateCanvasDimensions(); drawBoth(); });
     
-    // ========== ИСПРАВЛЕННЫЙ PWA БЛОК ==========
+    // ========== PWA БЛОК (диалог + инструкция только для iOS) ==========
     let deferredPrompt;
-    
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        console.log('PWA диалог готов');
     });
-    
     const installBtn = document.getElementById('pwaInstallIcon');
-    installBtn.addEventListener('click', async () => {
-        if (deferredPrompt) {
-            // Показываем родной диалог установки
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                console.log('Пользователь установил PWA');
-            } else {
-                console.log('Пользователь отклонил установку');
+    if (installBtn) {
+        installBtn.addEventListener('click', () => {
+            // Если есть deferredPrompt (Chrome, Edge, Android) -> показываем диалог
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt = null;
+            } 
+            // Для iOS (где beforeinstallprompt не поддерживается) показываем инструкцию
+            else if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                const msg = currentLang === 'ru' 
+                    ? 'Нажмите «Поделиться» → «На экран "Домой"»'
+                    : 'Tap "Share" → "Add to Home Screen"';
+                alert(msg);
             }
-            deferredPrompt = null;
-        } else {
-            // Запасной вариант: диалог недоступен (iOS, или сайт не соответствует критериям)
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-            if (isStandalone) {
-                // Уже установлено
-                return;
-            }
-            // Платформозависимые инструкции
-            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-            const isAndroid = /Android/.test(navigator.userAgent);
-            if (isIOS) {
-                alert('Нажмите «Поделиться» → «На экран "Домой"»');
-            } else if (isAndroid) {
-                alert('Нажмите ⋮ (меню) → «Установить приложение»');
-            } else {
-                alert('Установите приложение через меню браузера (обычно значок ⬇️ или ⋮ → Установить)');
-            }
-        }
-    });
-    // ==========================================
-    
+            // Для остальных случаев (например, браузер Firefox на десктопе) — тихо игнорируем
+        });
+    }
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js', { scope: './' })
             .then(reg => console.log('SW registered', reg))
             .catch(err => console.error('SW error', err));
     }
+    // =================================================================
     
     updateCanvasDimensions(); setupButtons(); setupNav(); renderObjects(); renderFurniture(); renderElectric(); setupSend(); updateNavButtons(); setLanguage('ru'); drawBoth();
 </script>
