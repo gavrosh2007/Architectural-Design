@@ -1,28 +1,23 @@
 {
-  "name": "HM&AD Architectural Design",
+  "name": "HM&AD architectural design",
   "short_name": "HM&AD",
-  "id": "com.hmad.architect.v3",
-  "start_url": "/?utm_source=pwa&v=3",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
   "theme_color": "#e8491d",
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "icon-192x192.png",
+      "src": "./icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512x512.png",
+      "src": "./icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "screenshots": [],
-  "categories": ["design", "lifestyle"],
-  "prefer_related_applications": false
+  ]
 }
