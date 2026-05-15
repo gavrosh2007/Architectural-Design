@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>HM&AD — Архитектурный дизайн</title>
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Architectural design - HM&AD">
@@ -12,48 +13,337 @@
     <meta name="theme-color" content="#e8491d">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { min-height: 100vh; position: relative; }
-        .bg-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: -2; filter: blur(1px); transform: scale(1.02); transition: background-image 0.5s ease; }
-        .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
-        header { background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); padding: 0.8rem 1.5rem; border-radius: 60px; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border: 1px solid rgba(232,73,29,0.3); }
-        .logo h1 { font-size: 1.8rem; color: #e8491d; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); font-weight: bold; letter-spacing: 2px; }
-        .nav-links { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-        .nav-btn { background: rgba(0,0,0,0.5); border: none; color: white; padding: 0.5rem 1.2rem; border-radius: 40px; cursor: pointer; transition: 0.2s; font-size: 1rem; }
-        .nav-btn:hover { background: #e8491d; }
-        .lang-switch { display: flex; gap: 0.5rem; }
-        .lang-btn { background: rgba(0,0,0,0.5); border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 30px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
-        .lang-btn.active { background: #e8491d; }
-        .install-area { text-align: center; margin: 1rem 0 2rem; }
-        .install-tooltip { position: relative; display: inline-block; }
-        .pwa-icon-btn { background: none; border: none; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; gap: 0.3rem; font-size: 0.9rem; font-weight: 600; color: #e8491d; }
-        .pwa-icon-btn img { width: 96px; height: 96px; border-radius: 12px; }
-        .tooltip-text { visibility: hidden; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 5px 10px; position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 0.75rem; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 20; }
-        .install-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
-        .hero { background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); border-radius: 32px; padding: 2rem; text-align: center; margin-bottom: 2rem; }
-        .hero h1 { font-size: 2.5rem; color: #e8491d; text-shadow: 1px 1px 0 rgba(255,255,255,0.8); }
-        .hero p { color: #1a1a1a; font-size: 1.2rem; margin-top: 0.5rem; }
-        .section-title { font-size: 1.8rem; color: #e8491d; text-shadow: 1px 1px 0 rgba(255,255,255,0.6); margin: 1.5rem 0 1rem; text-align: center; }
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
-        .object-card { background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); border-radius: 24px; padding: 1rem; text-align: center; cursor: pointer; transition: 0.2s; border-left: 4px solid #e8491d; color: #1a1a1a; }
-        .object-card.selected { background: rgba(232,73,29,0.3); transform: translateY(-3px); color: #1a1a1a; }
-        .object-emoji { font-size: 2.5rem; display: block; }
-        .plan-area { background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); border-radius: 32px; padding: 1.5rem; margin-bottom: 1.5rem; }
-        .canvas-container { background: rgba(0,0,0,0.1); border-radius: 24px; padding: 1rem; }
-        canvas { width: 100%; height: auto; background: #f5f5f0; border-radius: 16px; cursor: crosshair; touch-action: none; }
-        .button-group { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1rem; justify-content: center; }
-        .btn { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); border: none; color: rgba(255,255,255,0.95); padding: 0.6rem 1.2rem; border-radius: 40px; cursor: pointer; font-size: 0.85rem; transition: 0.2s; text-shadow: 0 1px 1px rgba(0,0,0,0.3); }
-        .btn-primary { background: #e8491d; }
-        .btn:hover { background: #c04010; transform: translateY(-2px); }
-        .form-card { background: rgba(255,255,255,0.4); backdrop-filter: blur(8px); border-radius: 28px; padding: 1.5rem; margin: 1.5rem 0; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group textarea, .form-group select { width: 100%; padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(232,73,29,0.5); background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.95); font-size: 1rem; }
-        .form-group textarea::placeholder { color: rgba(255,255,255,0.6); }
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
-        .checkbox-group label { display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.5); padding: 0.4rem 1rem; border-radius: 30px; font-size: 0.85rem; color: rgba(255,255,255,0.95); cursor: pointer; text-shadow: 0 1px 1px rgba(0,0,0,0.2); }
-        .instruction { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border-radius: 20px; padding: 0.8rem; color: rgba(255,255,255,0.95); font-size: 0.75rem; margin-top: 1rem; text-align: center; text-shadow: 0 1px 1px rgba(0,0,0,0.3); }
-        footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #555; font-weight: 500; }
-        .lang-content { display: none; }
-        .lang-content.active { display: block; }
+        
+        body {
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            filter: blur(1px);
+            transform: scale(1.02);
+            transition: background-image 0.5s ease;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        header {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(8px);
+            padding: 0.8rem 1.5rem;
+            border-radius: 60px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 1px solid rgba(232,73,29,0.3);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            color: #e8491d;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        
+        .nav-btn:hover {
+            background: #e8491d;
+        }
+        
+        .lang-switch {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .lang-btn {
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        
+        .lang-btn.active {
+            background: #e8491d;
+        }
+        
+        .install-area {
+            text-align: center;
+            margin: 1rem 0 2rem;
+        }
+        
+        .install-tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .pwa-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #e8491d;
+        }
+        
+        .pwa-icon-btn img {
+            width: 96px;
+            height: 96px;
+            border-radius: 12px;
+        }
+        
+        .tooltip-text {
+            visibility: hidden;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 20;
+        }
+        
+        .install-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .hero {
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #e8491d;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+        }
+        
+        .hero p {
+            color: #1a1a1a;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #e8491d;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.6);
+            margin: 1.5rem 0 1rem;
+            text-align: center;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .object-card {
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            border-left: 4px solid #e8491d;
+            color: #1a1a1a;
+        }
+        
+        .object-card.selected {
+            background: rgba(232,73,29,0.3);
+            transform: translateY(-3px);
+            color: #1a1a1a;
+        }
+        
+        .object-emoji {
+            font-size: 2.5rem;
+            display: block;
+        }
+        
+        .plan-area {
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .canvas-container {
+            background: rgba(0,0,0,0.1);
+            border-radius: 24px;
+            padding: 1rem;
+        }
+        
+        canvas {
+            width: 100%;
+            height: auto;
+            background: #f5f5f0;
+            border-radius: 16px;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        
+        .btn {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            border: none;
+            color: rgba(255,255,255,0.95);
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+        }
+        
+        .btn-primary {
+            background: #e8491d;
+        }
+        
+        .btn:hover {
+            background: #c04010;
+            transform: translateY(-2px);
+        }
+        
+        .form-card {
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 12px;
+            border: 1px solid rgba(232,73,29,0.5);
+            background: rgba(0,0,0,0.6);
+            color: rgba(255,255,255,0.95);
+            font-size: 1rem;
+        }
+        
+        .form-group textarea::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0,0,0,0.5);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.95);
+            cursor: pointer;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+        }
+        
+        .instruction {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            padding: 0.8rem;
+            color: rgba(255,255,255,0.95);
+            font-size: 0.75rem;
+            margin-top: 1rem;
+            text-align: center;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .lang-content {
+            display: none;
+        }
+        
+        .lang-content.active {
+            display: block;
+        }
+        
         @media (max-width: 700px) {
             .container { padding: 1rem; }
             .hero h1 { font-size: 1.8rem; }
@@ -65,6 +355,7 @@
 </head>
 <body>
 <div class="bg-layer" id="bgLayer"></div>
+
 <div class="container">
     <header>
         <div class="logo"><h1>HM&AD</h1></div>
@@ -80,6 +371,7 @@
             <button class="nav-btn" data-nav="send" id="navSendBtn"></button>
         </div>
     </header>
+
     <div class="install-area">
         <div class="install-tooltip">
             <button id="pwa-install-icon" class="pwa-icon-btn">
@@ -89,88 +381,129 @@
             <span class="tooltip-text" id="pwaTooltip">💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».</span>
         </div>
     </div>
-    <!-- РУССКАЯ ВЕРСИЯ -->
+
     <div id="ru-content" class="lang-content active">
         <div class="hero">
             <h1>HM&AD — Архитектурный дизайн</h1>
             <p>Расставьте объекты на плане — дизайнер всё поймёт</p>
         </div>
+
         <div id="plan" class="plan-area">
-            <div class="canvas-container"><canvas id="planCanvas" width="900" height="600"></canvas></div>
+            <div class="canvas-container">
+                <canvas id="planCanvas" width="900" height="600"></canvas>
+            </div>
             <div class="button-group">
                 <button class="btn" id="cameraBtn">📷 Снять план</button>
                 <button class="btn" id="loadBtn">📁 Загрузить план</button>
                 <button class="btn" id="calibrateDoorBtn" style="background:#2a6a4a">🚪 Калибровать дверь</button>
                 <button class="btn" id="resetObjBtn">🗑️ Очистить всё</button>
             </div>
-            <div id="calibStatus" class="instruction">🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма</div>
+            <div id="calibStatus" class="instruction">
+                🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма
+            </div>
         </div>
-        <div id="objects"><h2 class="section-title">📦 Объекты для расстановки</h2><div class="cards-grid" id="objectsGridRu"></div></div>
+
+        <div id="objects">
+            <h2 class="section-title">📦 Объекты для расстановки</h2>
+            <div class="cards-grid" id="objectsGridRu"></div>
+        </div>
+
         <div id="furniture" class="form-card">
             <h3 style="color:#e8491d; margin-bottom:1rem;">🛋️ Что нужно купить/заменить?</h3>
             <div class="checkbox-group" id="furnitureChecklistRu"></div>
-            <div class="form-group"><textarea id="furnitureWishRu" rows="2" placeholder="Дополнительные пожелания по мебели..."></textarea></div>
+            <div class="form-group">
+                <textarea id="furnitureWishRu" rows="2" placeholder="Дополнительные пожелания по мебели..."></textarea>
+            </div>
         </div>
+
         <div id="electric" class="form-card">
             <h3 style="color:#e8491d; margin-bottom:1rem;">⚡ Электротехника</h3>
             <div class="checkbox-group" id="electricLevelsRu"></div>
-            <div class="form-group"><textarea id="electricWishRu" rows="3" placeholder="Розетки, свет, тёплый пол, интернет..."></textarea></div>
+            <div class="form-group">
+                <textarea id="electricWishRu" rows="3" placeholder="Розетки, свет, тёплый пол, интернет..."></textarea>
+            </div>
         </div>
+
         <div id="send" class="form-card">
-            <div class="form-group"><textarea id="commentRu" rows="3" placeholder="💬 Ваша идея, пояснения..."></textarea></div>
+            <div class="form-group">
+                <textarea id="commentRu" rows="3" placeholder="💬 Ваша идея, пояснения..."></textarea>
+            </div>
             <button class="btn btn-primary" id="sendFinalBtnRu" style="width:100%;">📤 ОТПРАВИТЬ ДИЗАЙНЕРУ</button>
         </div>
+
         <footer><span>© 2025 HM&AD | Архитектурный дизайн и планировка</span></footer>
     </div>
-    <!-- АНГЛИЙСКАЯ ВЕРСИЯ -->
+
     <div id="en-content" class="lang-content">
         <div class="hero">
             <h1>HM&AD — Architectural Design</h1>
             <p>Place objects on the plan — designer will understand</p>
         </div>
+
         <div id="plan-en" class="plan-area">
-            <div class="canvas-container"><canvas id="planCanvasEn" width="900" height="600"></canvas></div>
+            <div class="canvas-container">
+                <canvas id="planCanvasEn" width="900" height="600"></canvas>
+            </div>
             <div class="button-group">
                 <button class="btn" id="cameraBtnEn">📷 Take plan photo</button>
                 <button class="btn" id="loadBtnEn">📁 Upload plan</button>
                 <button class="btn" id="calibrateDoorBtnEn" style="background:#2a6a4a">🚪 Calibrate door</button>
                 <button class="btn" id="resetObjBtnEn">🗑️ Clear all</button>
             </div>
-            <div id="calibStatusEn" class="instruction">🚪 Click "Calibrate door", then tap START and END of doorway</div>
+            <div id="calibStatusEn" class="instruction">
+                🚪 Click "Calibrate door", then tap START and END of doorway
+            </div>
         </div>
-        <div id="objects-en"><h2 class="section-title">📦 Objects to place</h2><div class="cards-grid" id="objectsGridEn"></div></div>
+
+        <div id="objects-en">
+            <h2 class="section-title">📦 Objects to place</h2>
+            <div class="cards-grid" id="objectsGridEn"></div>
+        </div>
+
         <div id="furniture-en" class="form-card">
             <h3 style="color:#e8491d; margin-bottom:1rem;">🛋️ What to buy/replace?</h3>
             <div class="checkbox-group" id="furnitureChecklistEn"></div>
-            <div class="form-group"><textarea id="furnitureWishEn" rows="2" placeholder="Additional furniture wishes..."></textarea></div>
+            <div class="form-group">
+                <textarea id="furnitureWishEn" rows="2" placeholder="Additional furniture wishes..."></textarea>
+            </div>
         </div>
+
         <div id="electric-en" class="form-card">
             <h3 style="color:#e8491d; margin-bottom:1rem;">⚡ Electrical</h3>
             <div class="checkbox-group" id="electricLevelsEn"></div>
-            <div class="form-group"><textarea id="electricWishEn" rows="3" placeholder="Outlets, lighting, heated floor, internet..."></textarea></div>
+            <div class="form-group">
+                <textarea id="electricWishEn" rows="3" placeholder="Outlets, lighting, heated floor, internet..."></textarea>
+            </div>
         </div>
+
         <div id="send-en" class="form-card">
-            <div class="form-group"><textarea id="commentEn" rows="3" placeholder="💬 Your idea, notes..."></textarea></div>
+            <div class="form-group">
+                <textarea id="commentEn" rows="3" placeholder="💬 Your idea, notes..."></textarea>
+            </div>
             <button class="btn btn-primary" id="sendFinalBtnEn" style="width:100%;">📤 SEND TO DESIGNER</button>
         </div>
+
         <footer><span>© 2025 HM&AD | Architectural design & planning</span></footer>
     </div>
 </div>
+
 <script>
-    // Тексты для навигационных кнопок
     const navTexts = {
         ru: { plan: '📐 План', objects: '📦 Объекты', furniture: '🛋️ Мебель', electric: '⚡ Электрика', send: '📤 Отправить' },
         en: { plan: '📐 Plan', objects: '📦 Objects', furniture: '🛋️ Furniture', electric: '⚡ Electrical', send: '📤 Send' }
     };
+    
     const backgrounds = ['bg1.jpg', 'bg2.jpg'];
     const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
     document.getElementById('bgLayer').style.backgroundImage = `url(${randomBg})`;
+    
     const REAL_SIZES_MM = {
         sofa: { w: 2000, h: 900 }, bed: { w: 2000, h: 1600 }, toilet: { w: 400, h: 600 },
         shower: { w: 900, h: 900 }, stairs: { w: 800, h: 2500 }, kitchen: { w: 1800, h: 600 },
         ac: { w: 800, h: 250 }, sauna: { w: 1200, h: 1200 }, wardrobe: { w: 1000, h: 600 },
         table: { w: 1400, h: 800 }, armchair: { w: 800, h: 800 }, washer: { w: 600, h: 600 }
     };
+    
     const objectsList = {
         ru: [
             { id: 'sofa', emoji: '🛋️', name: 'Диван', real: 'sofa' },
@@ -201,6 +534,7 @@
             { id: 'washer', emoji: '👕', name: 'Washer', real: 'washer' }
         ]
     };
+    
     const furnitureItems = [
         { id: 'sofa', nameRu: 'Диван', nameEn: 'Sofa' },
         { id: 'bed', nameRu: 'Кровать', nameEn: 'Bed' },
@@ -209,11 +543,13 @@
         { id: 'lighting', nameRu: 'Освещение', nameEn: 'Lighting' },
         { id: 'textile', nameRu: 'Текстиль', nameEn: 'Textile' }
     ];
+    
     const electricLevels = [
         { id: 'econom', nameRu: 'Бюджетный', nameEn: 'Budget' },
         { id: 'medium', nameRu: 'Средний', nameEn: 'Medium' },
         { id: 'premium', nameRu: 'Высокий', nameEn: 'High' }
     ];
+    
     let currentLang = 'ru';
     let selectedObjectType = null;
     let planImage = null;
@@ -222,275 +558,498 @@
     let doorCalibrationPoints = [];
     let selectedFurniture = [];
     let selectedElectric = null;
+    
     let canvasWidth = 900, canvasHeight = 600;
+    
     const canvas = document.getElementById('planCanvas');
     const ctx = canvas.getContext('2d');
     const canvasEn = document.getElementById('planCanvasEn');
     let ctxEn = null;
     if (canvasEn) ctxEn = canvasEn.getContext('2d');
+    
     function updateCanvasDimensions() {
         if (!canvas) return;
         canvasWidth = Math.min(900, canvas.parentElement.clientWidth);
         canvasHeight = canvasWidth * 0.7;
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
-        if (canvasEn) { canvasEn.width = canvasWidth; canvasEn.height = canvasHeight; }
+        if (canvasEn) {
+            canvasEn.width = canvasWidth;
+            canvasEn.height = canvasHeight;
+        }
     }
+    
     function relToAbs(relX, relY, relW, relH) {
-        return { x: relX * canvasWidth, y: relY * canvasHeight, w: relW * canvasWidth, h: relH * canvasHeight };
+        return {
+            x: relX * canvasWidth,
+            y: relY * canvasHeight,
+            w: relW * canvasWidth,
+            h: relH * canvasHeight
+        };
     }
+    
     function absToRel(x, y, w, h) {
-        return { relX: x / canvasWidth, relY: y / canvasHeight, relW: w / canvasWidth, relH: h / canvasHeight };
+        return {
+            relX: x / canvasWidth,
+            relY: y / canvasHeight,
+            relW: w / canvasWidth,
+            relH: h / canvasHeight
+        };
     }
+    
     function drawBoth() {
         if (ctx) {
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            
             if (planImage) {
                 let scale = Math.min(canvasWidth / planImage.width, canvasHeight / planImage.height);
-                let dw = planImage.width * scale, dh = planImage.height * scale;
-                let dx = (canvasWidth - dw)/2, dy = (canvasHeight - dh)/2;
+                let dw = planImage.width * scale;
+                let dh = planImage.height * scale;
+                let dx = (canvasWidth - dw) / 2;
+                let dy = (canvasHeight - dh) / 2;
                 ctx.drawImage(planImage, dx, dy, dw, dh);
             } else {
-                ctx.fillStyle = '#ddd'; ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-                ctx.fillStyle = '#666'; ctx.font = '16px sans-serif';
+                ctx.fillStyle = '#ddd';
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+                ctx.fillStyle = '#666';
+                ctx.font = '16px sans-serif';
                 ctx.fillText(currentLang === 'ru' ? 'Загрузите план' : 'Upload plan', 20, 50);
             }
+            
             for (let o of planObjects) {
                 let abs = relToAbs(o.relX, o.relY, o.relW, o.relH);
-                ctx.fillStyle = 'rgba(232,73,29,0.7)'; ctx.fillRect(abs.x, abs.y, abs.w, abs.h);
-                ctx.strokeStyle = '#fff'; ctx.strokeRect(abs.x, abs.y, abs.w, abs.h);
-                ctx.fillStyle = 'white'; ctx.font = '14px sans-serif';
-                ctx.fillText(o.emoji, abs.x+5, abs.y+abs.h-8);
-                ctx.font = '9px sans-serif'; ctx.fillText(o.name, abs.x+5, abs.y+14);
+                ctx.fillStyle = 'rgba(232,73,29,0.7)';
+                ctx.fillRect(abs.x, abs.y, abs.w, abs.h);
+                ctx.strokeStyle = '#fff';
+                ctx.strokeRect(abs.x, abs.y, abs.w, abs.h);
+                ctx.fillStyle = 'white';
+                ctx.font = '14px sans-serif';
+                ctx.fillText(o.emoji, abs.x + 5, abs.y + abs.h - 8);
+                ctx.font = '9px sans-serif';
+                ctx.fillStyle = 'white';
+                ctx.fillText(o.name, abs.x + 5, abs.y + 14);
             }
+            
             if (doorCalibrationPoints.length === 1) {
-                ctx.fillStyle = 'red'; ctx.beginPath();
-                ctx.arc(doorCalibrationPoints[0].x, doorCalibrationPoints[0].y, 8, 0, 2*Math.PI); ctx.fill();
+                ctx.fillStyle = 'red';
+                ctx.beginPath();
+                ctx.arc(doorCalibrationPoints[0].x, doorCalibrationPoints[0].y, 8, 0, 2 * Math.PI);
+                ctx.fill();
             }
         }
-        if (ctxEn && canvasEn && canvas) { canvasEn.width = canvasWidth; canvasEn.height = canvasHeight; ctxEn.drawImage(canvas, 0, 0); }
+        
+        if (ctxEn && canvasEn && canvas) {
+            canvasEn.width = canvasWidth;
+            canvasEn.height = canvasHeight;
+            ctxEn.drawImage(canvas, 0, 0);
+        }
     }
-    function computeScaleFromDoor(p1,p2) {
-        let doorPixels = Math.hypot(p2.x-p1.x, p2.y-p1.y);
-        if(doorPixels<5) return false;
-        scaleMMperPixel = 800/doorPixels;
-        let statusDiv = currentLang==='ru'? document.getElementById('calibStatus'):document.getElementById('calibStatusEn');
-        if(statusDiv) statusDiv.innerHTML = (currentLang==='ru'?'✅ Дверь откалибрована! ':'✅ Door calibrated! ')+Math.round(scaleMMperPixel*10)/10+(currentLang==='ru'?' мм/пиксель.':' mm/pixel.');
+    
+    function computeScaleFromDoor(p1, p2) {
+        let doorPixels = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+        if (doorPixels < 5) return false;
+        scaleMMperPixel = 800 / doorPixels;
+        let statusDiv = currentLang === 'ru' ? document.getElementById('calibStatus') : document.getElementById('calibStatusEn');
+        if (statusDiv) statusDiv.innerHTML = (currentLang === 'ru' ? '✅ Дверь откалибрована! ' : '✅ Door calibrated! ') + Math.round(scaleMMperPixel * 10) / 10 + (currentLang === 'ru' ? ' мм/пиксель.' : ' mm/pixel.');
         return true;
     }
+    
     function addObjectAt(absX, absY) {
-        if(!selectedObjectType) { alert(currentLang==='ru'?'Выберите объект':'Select an object'); return; }
-        if(!scaleMMperPixel) { alert(currentLang==='ru'?'Сначала откалибруйте дверь':'Calibrate the door first'); return; }
-        let template = objectsList[currentLang].find(c=>c.id===selectedObjectType);
-        if(!template) return;
+        if (!selectedObjectType) {
+            alert(currentLang === 'ru' ? 'Выберите объект' : 'Select an object');
+            return;
+        }
+        if (!scaleMMperPixel) {
+            alert(currentLang === 'ru' ? 'Сначала откалибруйте дверь' : 'Calibrate the door first');
+            return;
+        }
+        
+        let template = objectsList[currentLang].find(c => c.id === selectedObjectType);
+        if (!template) return;
+        
         let real = REAL_SIZES_MM[template.real];
-        let wPx = real.w/scaleMMperPixel, hPx = real.h/scaleMMperPixel;
-        let x = absX - wPx/2, y = absY - hPx/2;
-        x = Math.min(Math.max(0,x), canvasWidth-wPx);
-        y = Math.min(Math.max(0,y), canvasHeight-hPx);
-        let rel = absToRel(x,y,wPx,hPx);
-        planObjects.push({ id: Date.now(), emoji: template.emoji, name: template.name, realW_mm: real.w, realH_mm: real.h, relX: rel.relX, relY: rel.relY, relW: rel.relW, relH: rel.relH });
+        let wPx = real.w / scaleMMperPixel;
+        let hPx = real.h / scaleMMperPixel;
+        
+        let x = absX - wPx / 2;
+        let y = absY - hPx / 2;
+        x = Math.min(Math.max(0, x), canvasWidth - wPx);
+        y = Math.min(Math.max(0, y), canvasHeight - hPx);
+        
+        let rel = absToRel(x, y, wPx, hPx);
+        
+        planObjects.push({
+            id: Date.now(),
+            emoji: template.emoji,
+            name: template.name,
+            realW_mm: real.w,
+            realH_mm: real.h,
+            relX: rel.relX,
+            relY: rel.relY,
+            relW: rel.relW,
+            relH: rel.relH
+        });
+        
         drawBoth();
     }
-    function findObj(absX,absY) {
-        for(let i=planObjects.length-1;i>=0;i--) {
-            let o=planObjects[i], abs=relToAbs(o.relX,o.relY,o.relW,o.relH);
-            if(absX>=abs.x && absX<=abs.x+abs.w && absY>=abs.y && absY<=abs.y+abs.h) return i;
+    
+    function findObj(absX, absY) {
+        for (let i = planObjects.length - 1; i >= 0; i--) {
+            let o = planObjects[i];
+            let abs = relToAbs(o.relX, o.relY, o.relW, o.relH);
+            if (absX >= abs.x && absX <= abs.x + abs.w && absY >= abs.y && absY <= abs.y + abs.h) return i;
         }
         return -1;
     }
-    let dragIdx=-1, dragOffsetX=0, dragOffsetY=0;
+    
+    let dragIdx = -1, dragOffsetX = 0, dragOffsetY = 0;
+    
     function onStart(e) {
         e.preventDefault();
         let rect = canvas.getBoundingClientRect();
-        let sx = canvasWidth/rect.width, sy = canvasHeight/rect.height;
-        let cx,cy;
-        if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; }
-        else { cx=e.clientX; cy=e.clientY; }
-        let absX = (cx-rect.left)*sx, absY = (cy-rect.top)*sy;
-        let idx = findObj(absX,absY);
-        if(idx!==-1) {
+        let sx = canvasWidth / rect.width;
+        let sy = canvasHeight / rect.height;
+        let cx, cy;
+        if (e.touches) {
+            cx = e.touches[0].clientX;
+            cy = e.touches[0].clientY;
+        } else {
+            cx = e.clientX;
+            cy = e.clientY;
+        }
+        let absX = (cx - rect.left) * sx;
+        let absY = (cy - rect.top) * sy;
+        
+        let idx = findObj(absX, absY);
+        if (idx !== -1) {
             dragIdx = idx;
-            let objAbs = relToAbs(planObjects[idx].relX,planObjects[idx].relY,planObjects[idx].relW,planObjects[idx].relH);
-            dragOffsetX = absX-objAbs.x; dragOffsetY = absY-objAbs.y;
-        } else { addObjectAt(absX,absY); }
+            let objAbs = relToAbs(planObjects[idx].relX, planObjects[idx].relY, planObjects[idx].relW, planObjects[idx].relH);
+            dragOffsetX = absX - objAbs.x;
+            dragOffsetY = absY - objAbs.y;
+        } else {
+            addObjectAt(absX, absY);
+        }
     }
+    
     function onMove(e) {
-        if(dragIdx===-1) return;
+        if (dragIdx === -1) return;
         e.preventDefault();
         let rect = canvas.getBoundingClientRect();
-        let sx = canvasWidth/rect.width, sy = canvasHeight/rect.height;
-        let cx,cy;
-        if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; }
-        else { cx=e.clientX; cy=e.clientY; }
-        let absX = (cx-rect.left)*sx, absY = (cy-rect.top)*sy;
+        let sx = canvasWidth / rect.width;
+        let sy = canvasHeight / rect.height;
+        let cx, cy;
+        if (e.touches) {
+            cx = e.touches[0].clientX;
+            cy = e.touches[0].clientY;
+        } else {
+            cx = e.clientX;
+            cy = e.clientY;
+        }
+        let absX = (cx - rect.left) * sx;
+        let absY = (cy - rect.top) * sy;
+        
         let obj = planObjects[dragIdx];
-        let objAbs = relToAbs(obj.relX,obj.relY,obj.relW,obj.relH);
-        let newAbsX = absX - dragOffsetX, newAbsY = absY - dragOffsetY;
-        newAbsX = Math.min(Math.max(0,newAbsX), canvasWidth-objAbs.w);
-        newAbsY = Math.min(Math.max(0,newAbsY), canvasHeight-objAbs.h);
+        let objAbs = relToAbs(obj.relX, obj.relY, obj.relW, obj.relH);
+        let newAbsX = absX - dragOffsetX;
+        let newAbsY = absY - dragOffsetY;
+        newAbsX = Math.min(Math.max(0, newAbsX), canvasWidth - objAbs.w);
+        newAbsY = Math.min(Math.max(0, newAbsY), canvasHeight - objAbs.h);
+        
         let newRel = absToRel(newAbsX, newAbsY, objAbs.w, objAbs.h);
-        obj.relX = newRel.relX; obj.relY = newRel.relY;
+        obj.relX = newRel.relX;
+        obj.relY = newRel.relY;
+        
         drawBoth();
     }
-    function onEnd(e) { dragIdx=-1; }
-    canvas.addEventListener('mousedown',onStart); canvas.addEventListener('mousemove',onMove); canvas.addEventListener('mouseup',onEnd);
-    canvas.addEventListener('touchstart',onStart); canvas.addEventListener('touchmove',onMove); canvas.addEventListener('touchend',onEnd);
+    
+    function onEnd(e) {
+        dragIdx = -1;
+    }
+    
+    canvas.addEventListener('mousedown', onStart);
+    canvas.addEventListener('mousemove', onMove);
+    canvas.addEventListener('mouseup', onEnd);
+    canvas.addEventListener('touchstart', onStart);
+    canvas.addEventListener('touchmove', onMove);
+    canvas.addEventListener('touchend', onEnd);
+    
     function loadImage(file) {
         let r = new FileReader();
         r.onload = e => {
             let img = new Image();
             img.onload = () => {
                 planImage = img;
-                scaleMMperPixel = null; doorCalibrationPoints = []; planObjects = [];
+                scaleMMperPixel = null;
+                doorCalibrationPoints = [];
+                planObjects = [];
                 drawBoth();
-                let statusDiv = currentLang==='ru'?document.getElementById('calibStatus'):document.getElementById('calibStatusEn');
-                if(statusDiv) statusDiv.innerHTML = currentLang==='ru'?'🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма':'🚪 Click "Calibrate door", then tap START and END of doorway';
+                let statusDiv = currentLang === 'ru' ? document.getElementById('calibStatus') : document.getElementById('calibStatusEn');
+                if (statusDiv) statusDiv.innerHTML = currentLang === 'ru' 
+                    ? '🚪 Нажмите «Калибровать дверь», затем на НАЧАЛО и КОНЕЦ дверного проёма'
+                    : '🚪 Click "Calibrate door", then tap START and END of doorway';
             };
             img.src = e.target.result;
         };
         r.readAsDataURL(file);
     }
+    
     function setupButtons() {
-        const cameraBtn = document.getElementById('cameraBtn'), loadBtn = document.getElementById('loadBtn'), calibrateBtn = document.getElementById('calibrateDoorBtn'), resetBtn = document.getElementById('resetObjBtn');
-        const cameraBtnEn = document.getElementById('cameraBtnEn'), loadBtnEn = document.getElementById('loadBtnEn'), calibrateBtnEn = document.getElementById('calibrateDoorBtnEn'), resetBtnEn = document.getElementById('resetObjBtnEn');
-        const handlerCamera = () => { let inp = document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.capture='environment'; inp.onchange=e=>{if(e.target.files[0]) loadImage(e.target.files[0]);}; inp.click(); };
-        const handlerLoad = () => { let inp = document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.onchange=e=>{if(e.target.files[0]) loadImage(e.target.files[0]);}; inp.click(); };
+        const cameraBtn = document.getElementById('cameraBtn');
+        const loadBtn = document.getElementById('loadBtn');
+        const calibrateBtn = document.getElementById('calibrateDoorBtn');
+        const resetBtn = document.getElementById('resetObjBtn');
+        
+        const cameraBtnEn = document.getElementById('cameraBtnEn');
+        const loadBtnEn = document.getElementById('loadBtnEn');
+        const calibrateBtnEn = document.getElementById('calibrateDoorBtnEn');
+        const resetBtnEn = document.getElementById('resetObjBtnEn');
+        
+        const handlerCamera = () => {
+            let inp = document.createElement('input');
+            inp.type = 'file';
+            inp.accept = 'image/*';
+            inp.capture = 'environment';
+            inp.onchange = e => { if (e.target.files[0]) loadImage(e.target.files[0]); };
+            inp.click();
+        };
+        
+        const handlerLoad = () => {
+            let inp = document.createElement('input');
+            inp.type = 'file';
+            inp.accept = 'image/*';
+            inp.onchange = e => { if (e.target.files[0]) loadImage(e.target.files[0]); };
+            inp.click();
+        };
+        
         const handlerReset = () => { planObjects = []; drawBoth(); };
+        
         const handlerCalibrate = () => {
-            if(!planImage) { alert(currentLang==='ru'?'Сначала загрузите план':'Upload plan first'); return; }
+            if (!planImage) { alert(currentLang === 'ru' ? 'Сначала загрузите план' : 'Upload plan first'); return; }
             doorCalibrationPoints = [];
-            let statusDiv = currentLang==='ru'?document.getElementById('calibStatus'):document.getElementById('calibStatusEn');
-            if(statusDiv) statusDiv.innerHTML = currentLang==='ru'?'🔴 Нажмите на НАЧАЛО дверного проёма...':'🔴 Tap START of doorway...';
+            let statusDiv = currentLang === 'ru' ? document.getElementById('calibStatus') : document.getElementById('calibStatusEn');
+            if (statusDiv) statusDiv.innerHTML = currentLang === 'ru' ? '🔴 Нажмите на НАЧАЛО дверного проёма...' : '🔴 Tap START of doorway...';
             let tempHandler = (e) => {
                 let rect = canvas.getBoundingClientRect();
-                let sx = canvasWidth/rect.width, sy = canvasHeight/rect.height;
-                let cx,cy;
-                if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; }
-                else { cx=e.clientX; cy=e.clientY; }
-                let absX = (cx-rect.left)*sx, absY = (cy-rect.top)*sy;
-                doorCalibrationPoints.push({x:absX,y:absY});
+                let sx = canvasWidth / rect.width;
+                let sy = canvasHeight / rect.height;
+                let cx, cy;
+                if (e.touches) {
+                    cx = e.touches[0].clientX;
+                    cy = e.touches[0].clientY;
+                } else {
+                    cx = e.clientX;
+                    cy = e.clientY;
+                }
+                let absX = (cx - rect.left) * sx;
+                let absY = (cy - rect.top) * sy;
+                doorCalibrationPoints.push({ x: absX, y: absY });
                 drawBoth();
-                if(doorCalibrationPoints.length===1 && statusDiv) statusDiv.innerHTML = currentLang==='ru'?'🔴 Теперь нажмите на КОНЕЦ дверного проёма':'🔴 Now tap END of doorway';
-                if(doorCalibrationPoints.length===2) {
-                    computeScaleFromDoor(doorCalibrationPoints[0],doorCalibrationPoints[1]);
-                    canvas.removeEventListener('click',tempHandler); canvas.removeEventListener('touchstart',tempHandler);
+                if (doorCalibrationPoints.length === 1 && statusDiv) {
+                    statusDiv.innerHTML = currentLang === 'ru' ? '🔴 Теперь нажмите на КОНЕЦ дверного проёма' : '🔴 Now tap END of doorway';
+                }
+                if (doorCalibrationPoints.length === 2) {
+                    computeScaleFromDoor(doorCalibrationPoints[0], doorCalibrationPoints[1]);
+                    canvas.removeEventListener('click', tempHandler);
+                    canvas.removeEventListener('touchstart', tempHandler);
                 }
             };
-            canvas.addEventListener('click',tempHandler); canvas.addEventListener('touchstart',tempHandler);
+            canvas.addEventListener('click', tempHandler);
+            canvas.addEventListener('touchstart', tempHandler);
         };
-        if(cameraBtn) cameraBtn.onclick=handlerCamera; if(cameraBtnEn) cameraBtnEn.onclick=handlerCamera;
-        if(loadBtn) loadBtn.onclick=handlerLoad; if(loadBtnEn) loadBtnEn.onclick=handlerLoad;
-        if(resetBtn) resetBtn.onclick=handlerReset; if(resetBtnEn) resetBtnEn.onclick=handlerReset;
-        if(calibrateBtn) calibrateBtn.onclick=handlerCalibrate; if(calibrateBtnEn) calibrateBtnEn.onclick=handlerCalibrate;
+        
+        if (cameraBtn) cameraBtn.onclick = handlerCamera;
+        if (cameraBtnEn) cameraBtnEn.onclick = handlerCamera;
+        if (loadBtn) loadBtn.onclick = handlerLoad;
+        if (loadBtnEn) loadBtnEn.onclick = handlerLoad;
+        if (resetBtn) resetBtn.onclick = handlerReset;
+        if (resetBtnEn) resetBtnEn.onclick = handlerReset;
+        if (calibrateBtn) calibrateBtn.onclick = handlerCalibrate;
+        if (calibrateBtnEn) calibrateBtnEn.onclick = handlerCalibrate;
     }
+    
     function renderObjects() {
-        let container = document.getElementById('objectsGridRu'), containerEn = document.getElementById('objectsGridEn');
-        if(!container) return;
+        let container = document.getElementById('objectsGridRu');
+        let containerEn = document.getElementById('objectsGridEn');
+        if (!container) return;
+        
         let list = objectsList.ru;
         container.innerHTML = '';
-        list.forEach(obj=>{
-            let div = document.createElement('div'); div.className='object-card';
-            if(selectedObjectType===obj.id) div.classList.add('selected');
+        list.forEach(obj => {
+            let div = document.createElement('div');
+            div.className = 'object-card';
+            if (selectedObjectType === obj.id) div.classList.add('selected');
             div.innerHTML = `<span class="object-emoji">${obj.emoji}</span><span>${obj.name}</span>`;
-            div.onclick = ()=>{
+            div.onclick = () => {
                 selectedObjectType = obj.id;
-                document.querySelectorAll('#objectsGridRu .object-card, #objectsGridEn .object-card').forEach(el=>el.classList.remove('selected'));
+                document.querySelectorAll('#objectsGridRu .object-card, #objectsGridEn .object-card').forEach(el => el.classList.remove('selected'));
                 div.classList.add('selected');
-                if(containerEn) { let targetDiv = Array.from(containerEn.children).find(child=>child.innerText.includes(obj.emoji)); if(targetDiv) targetDiv.classList.add('selected'); }
+                if (containerEn) {
+                    let targetDiv = Array.from(containerEn.children).find(child => child.innerText.includes(obj.emoji));
+                    if (targetDiv) targetDiv.classList.add('selected');
+                }
             };
             container.appendChild(div);
         });
-        if(containerEn) {
+        
+        if (containerEn) {
             let listEn = objectsList.en;
             containerEn.innerHTML = '';
-            listEn.forEach(obj=>{
-                let div = document.createElement('div'); div.className='object-card';
-                if(selectedObjectType===obj.id) div.classList.add('selected');
+            listEn.forEach(obj => {
+                let div = document.createElement('div');
+                div.className = 'object-card';
+                if (selectedObjectType === obj.id) div.classList.add('selected');
                 div.innerHTML = `<span class="object-emoji">${obj.emoji}</span><span>${obj.name}</span>`;
-                div.onclick = ()=>{
+                div.onclick = () => {
                     selectedObjectType = obj.id;
-                    document.querySelectorAll('#objectsGridRu .object-card, #objectsGridEn .object-card').forEach(el=>el.classList.remove('selected'));
+                    document.querySelectorAll('#objectsGridRu .object-card, #objectsGridEn .object-card').forEach(el => el.classList.remove('selected'));
                     div.classList.add('selected');
-                    if(container) { let targetDiv = Array.from(container.children).find(child=>child.innerText.includes(obj.emoji)); if(targetDiv) targetDiv.classList.add('selected'); }
+                    if (container) {
+                        let targetDiv = Array.from(container.children).find(child => child.innerText.includes(obj.emoji));
+                        if (targetDiv) targetDiv.classList.add('selected');
+                    }
                 };
                 containerEn.appendChild(div);
             });
         }
     }
+    
     function renderFurniture() {
-        let container = document.getElementById('furnitureChecklistRu'), containerEn = document.getElementById('furnitureChecklistEn');
-        if(!container) return;
+        let container = document.getElementById('furnitureChecklistRu');
+        let containerEn = document.getElementById('furnitureChecklistEn');
+        if (!container) return;
+        
         container.innerHTML = '';
-        furnitureItems.forEach(f=>{
+        furnitureItems.forEach(f => {
             let label = document.createElement('label');
-            let cb = document.createElement('input'); cb.type='checkbox'; cb.value=f.id;
-            cb.onchange = e=>{
-                if(e.target.checked) { if(!selectedFurniture.includes(f.id)) selectedFurniture.push(f.id); }
-                else { selectedFurniture = selectedFurniture.filter(i=>i!==f.id); }
-                if(containerEn) { let cbEn = containerEn.querySelector(`input[value="${f.id}"]`); if(cbEn) cbEn.checked = e.target.checked; }
+            let cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.value = f.id;
+            cb.onchange = e => {
+                if (e.target.checked) {
+                    if (!selectedFurniture.includes(f.id)) selectedFurniture.push(f.id);
+                } else {
+                    selectedFurniture = selectedFurniture.filter(i => i !== f.id);
+                }
+                if (containerEn) {
+                    let cbEn = containerEn.querySelector(`input[value="${f.id}"]`);
+                    if (cbEn) cbEn.checked = e.target.checked;
+                }
             };
-            label.appendChild(cb); label.appendChild(document.createTextNode(f.nameRu));
+            label.appendChild(cb);
+            label.appendChild(document.createTextNode(f.nameRu));
             container.appendChild(label);
         });
-        if(containerEn) {
+        
+        if (containerEn) {
             containerEn.innerHTML = '';
-            furnitureItems.forEach(f=>{
+            furnitureItems.forEach(f => {
                 let label = document.createElement('label');
-                let cb = document.createElement('input'); cb.type='checkbox'; cb.value=f.id; cb.checked = selectedFurniture.includes(f.id);
-                cb.onchange = e=>{
-                    if(e.target.checked) { if(!selectedFurniture.includes(f.id)) selectedFurniture.push(f.id); }
-                    else { selectedFurniture = selectedFurniture.filter(i=>i!==f.id); }
-                    if(container) { let cbRu = container.querySelector(`input[value="${f.id}"]`); if(cbRu) cbRu.checked = e.target.checked; }
+                let cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.value = f.id;
+                cb.checked = selectedFurniture.includes(f.id);
+                cb.onchange = e => {
+                    if (e.target.checked) {
+                        if (!selectedFurniture.includes(f.id)) selectedFurniture.push(f.id);
+                    } else {
+                        selectedFurniture = selectedFurniture.filter(i => i !== f.id);
+                    }
+                    if (container) {
+                        let cbRu = container.querySelector(`input[value="${f.id}"]`);
+                        if (cbRu) cbRu.checked = e.target.checked;
+                    }
                 };
-                label.appendChild(cb); label.appendChild(document.createTextNode(f.nameEn));
+                label.appendChild(cb);
+                label.appendChild(document.createTextNode(f.nameEn));
                 containerEn.appendChild(label);
             });
         }
     }
+    
     function renderElectric() {
-        let container = document.getElementById('electricLevelsRu'), containerEn = document.getElementById('electricLevelsEn');
-        if(!container) return;
+        let container = document.getElementById('electricLevelsRu');
+        let containerEn = document.getElementById('electricLevelsEn');
+        if (!container) return;
+        
         container.innerHTML = '';
-        electricLevels.forEach(l=>{
+        electricLevels.forEach(l => {
             let label = document.createElement('label');
-            let radio = document.createElement('input'); radio.type='radio'; radio.name='electric'; radio.value=l.id; radio.checked = (selectedElectric===l.id);
-            radio.onchange = e=>{ if(e.target.checked) selectedElectric = l.id; if(containerEn) { let radioEn = containerEn.querySelector(`input[value="${l.id}"]`); if(radioEn) radioEn.checked=true; } };
-            label.appendChild(radio); label.appendChild(document.createTextNode(l.nameRu));
+            let radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'electric';
+            radio.value = l.id;
+            radio.checked = selectedElectric === l.id;
+            radio.onchange = e => {
+                if (e.target.checked) selectedElectric = l.id;
+                if (containerEn) {
+                    let radioEn = containerEn.querySelector(`input[value="${l.id}"]`);
+                    if (radioEn) radioEn.checked = true;
+                }
+            };
+            label.appendChild(radio);
+            label.appendChild(document.createTextNode(l.nameRu));
             container.appendChild(label);
         });
-        if(containerEn) {
+        
+        if (containerEn) {
             containerEn.innerHTML = '';
-            electricLevels.forEach(l=>{
+            electricLevels.forEach(l => {
                 let label = document.createElement('label');
-                let radio = document.createElement('input'); radio.type='radio'; radio.name='electric'; radio.value=l.id; radio.checked = (selectedElectric===l.id);
-                radio.onchange = e=>{ if(e.target.checked) selectedElectric = l.id; if(container) { let radioRu = container.querySelector(`input[value="${l.id}"]`); if(radioRu) radioRu.checked=true; } };
-                label.appendChild(radio); label.appendChild(document.createTextNode(l.nameEn));
+                let radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'electric';
+                radio.value = l.id;
+                radio.checked = selectedElectric === l.id;
+                radio.onchange = e => {
+                    if (e.target.checked) selectedElectric = l.id;
+                    if (container) {
+                        let radioRu = container.querySelector(`input[value="${l.id}"]`);
+                        if (radioRu) radioRu.checked = true;
+                    }
+                };
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(l.nameEn));
                 containerEn.appendChild(label);
             });
         }
     }
+    
     function setupSend() {
-        let sendBtn = document.getElementById('sendFinalBtnRu'), sendBtnEn = document.getElementById('sendFinalBtnEn');
-        const handlerSend = ()=>{
-            let comment = currentLang==='ru'?document.getElementById('commentRu').value:document.getElementById('commentEn').value;
-            let furnitureWish = currentLang==='ru'?document.getElementById('furnitureWishRu').value:document.getElementById('furnitureWishEn').value;
-            let electricWish = currentLang==='ru'?document.getElementById('electricWishRu').value:document.getElementById('electricWishEn').value;
-            let data = { lang: currentLang, planImage: planImage?.src||null, planObjects, comment, furniture: selectedFurniture, furnitureWish, electricLevel: selectedElectric, electricWish };
+        let sendBtn = document.getElementById('sendFinalBtnRu');
+        let sendBtnEn = document.getElementById('sendFinalBtnEn');
+        
+        const handlerSend = () => {
+            let comment = currentLang === 'ru' ? document.getElementById('commentRu').value : document.getElementById('commentEn').value;
+            let furnitureWish = currentLang === 'ru' ? document.getElementById('furnitureWishRu').value : document.getElementById('furnitureWishEn').value;
+            let electricWish = currentLang === 'ru' ? document.getElementById('electricWishRu').value : document.getElementById('electricWishEn').value;
+            let data = {
+                lang: currentLang,
+                planImage: planImage?.src || null,
+                planObjects: planObjects,
+                comment: comment,
+                furniture: selectedFurniture,
+                furnitureWish: furnitureWish,
+                electricLevel: selectedElectric,
+                electricWish: electricWish
+            };
             console.log('📤 Дизайнеру:', data);
-            alert(currentLang==='ru'?'Заказ отправлен! Дизайнер свяжется.':'Order sent! Designer will contact you.');
+            alert(currentLang === 'ru' ? 'Заказ отправлен! Дизайнер свяжется.' : 'Order sent! Designer will contact you.');
         };
-        if(sendBtn) sendBtn.onclick=handlerSend; if(sendBtnEn) sendBtnEn.onclick=handlerSend;
+        
+        if (sendBtn) sendBtn.onclick = handlerSend;
+        if (sendBtnEn) sendBtnEn.onclick = handlerSend;
     }
+    
     function setupNav() {
-        document.querySelectorAll('.nav-btn').forEach(btn=>{
-            btn.addEventListener('click',()=>{
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
                 let sectionId = btn.dataset.nav;
-                let element = document.getElementById(sectionId+(currentLang==='en'?'-en':''));
-                if(element) element.scrollIntoView({behavior:'smooth'});
+                let element = document.getElementById(sectionId + (currentLang === 'en' ? '-en' : ''));
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
             });
         });
     }
+    
     function updateNavButtons() {
         const texts = navTexts[currentLang];
         document.getElementById('navPlanBtn').innerText = texts.plan;
@@ -499,32 +1058,44 @@
         document.getElementById('navElectricBtn').innerText = texts.electric;
         document.getElementById('navSendBtn').innerText = texts.send;
     }
+    
     function setLanguage(lang) {
         currentLang = lang;
-        document.getElementById('ru-content').classList.toggle('active', lang==='ru');
-        document.getElementById('en-content').classList.toggle('active', lang==='en');
-        document.querySelectorAll('.lang-btn').forEach(btn=>btn.classList.toggle('active', btn.dataset.lang===lang));
+        document.getElementById('ru-content').classList.toggle('active', lang === 'ru');
+        document.getElementById('en-content').classList.toggle('active', lang === 'en');
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+        
         let pwaText = document.getElementById('pwaBtnText');
-        if(pwaText) pwaText.innerText = lang==='ru'?'Установить приложение':'Install app';
+        if (pwaText) pwaText.innerText = lang === 'ru' ? 'Установить приложение' : 'Install app';
+        
         let tooltip = document.getElementById('pwaTooltip');
-        if(tooltip) tooltip.innerHTML = lang==='ru'?'💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».':'💡 Click — install as app.<br>• Chrome/Edge: dialog appears.<br>• iPhone: Share → Add to Home Screen.';
-        updateNavButtons(); drawBoth();
+        if (tooltip) {
+            tooltip.innerHTML = lang === 'ru' 
+                ? '💡 Нажмите — установите как приложение.<br>• Chrome/Edge: появится диалог.<br>• iPhone: Поделиться → На экран «Домой».'
+                : '💡 Click — install as app.<br>• Chrome/Edge: dialog appears.<br>• iPhone: Share → Add to Home Screen.';
+        }
+        
+        updateNavButtons();
+        drawBoth();
     }
-    document.querySelectorAll('.lang-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ setLanguage(btn.dataset.lang); }); });
-    window.addEventListener('resize',()=>{ updateCanvasDimensions(); drawBoth(); });
     
-    // ====================== PWA УСТАНОВКА (рабочая кнопка) ======================
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        console.log('PWA: beforeinstallprompt перехвачен');
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            setLanguage(btn.dataset.lang);
+        });
     });
+    
+    window.addEventListener('resize', () => {
+        updateCanvasDimensions();
+        drawBoth();
+    });
+    
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
     document.getElementById('pwa-install-icon')?.addEventListener('click', async () => {
         if (deferredPrompt) {
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`PWA: пользователь ${outcome}`);
+            await deferredPrompt.userChoice;
             deferredPrompt = null;
         } else {
             alert(currentLang === 'ru' 
@@ -532,11 +1103,6 @@
                 : 'To install: Chrome/Edge — ⋮ → Install app, iPhone — Share → Add to Home Screen');
         }
     });
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        const installArea = document.querySelector('.install-area');
-        if (installArea) installArea.style.display = 'none';
-    }
-    // ========================================================================
     
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js', { scope: './' }).catch(err => console.warn('SW error:', err));
