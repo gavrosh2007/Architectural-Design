@@ -1,0 +1,13 @@
+/* TEAM */
+Developer: Andriy Gavrylenko
+Contact: gavrosh2007@gmail.com
+Country: Cyprus
+Language: Ukrainian, Russian, English
+
+/* SITE */
+Last update: 2026-05-24
+Standards: HTML5, CSS3, PWA, LocalStorage
+Purpose: Professional meeting platform with smart contracts
+
+/* THANKS */
+Thanks to all testers and users for feedback.

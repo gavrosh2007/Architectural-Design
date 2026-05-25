@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HM&SR — Условия использования</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #e8eef2; color: #1a1a1a; line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; background: rgba(255,255,250,0.85); backdrop-filter: blur(4px); border-radius: 48px; margin-top: 2rem; margin-bottom: 2rem; }
+        h1 { color: #e8491d; margin-bottom: 1rem; }
+        h2 { color: #333; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        .lang-switch { text-align: right; margin-bottom: 1.5rem; }
+        .lang-btn { background: rgba(255,255,245,0.7); border: 1px solid #e8491d; color: #e8491d; padding: 0.3rem 0.8rem; margin: 0 0.2rem; cursor: pointer; border-radius: 30px; font-weight: bold; transition: 0.2s; }
+        .lang-btn.active { background: #e8491d; color: white; }
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
+        footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.1); text-align: center; font-size: 0.85rem; color: #555; }
+        footer a { color: #e8491d; text-decoration: none; margin: 0 0.5rem; }
+        footer a:hover { text-decoration: underline; }
+        a { color: #e8491d; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+
+    <!-- RUSSIAN -->
+    <div id="ru-content" class="lang-content active">
+        <h1>Условия использования сайта</h1>
+        <p><strong>Актуально для законодательства Республики Кипр и Европейского Союза</strong></p>
+        <p>Владелец сайта: <strong>Andriy Gavrylenko</strong><br>
+        Контакты: <a href="mailto:gavrosh2007@gmail.com">gavrosh2007@gmail.com</a></p>
+
+        <h2>1. Авторские права</h2>
+        <p>Весь контент сайта (тексты, изображения, дизайн, код, планировочные решения, чертежи) является интеллектуальной собственностью владельца сайта и защищён Законом об авторском праве Кипра (Cap. 59) и Директивой ЕС 2001/29/EC.</p>
+
+        <h2>2. Запрет на копирование и извлечение данных</h2>
+        <p>Запрещается полностью или частично копировать, воспроизводить, распространять, публично показывать, загружать в нейросети, использовать для парсинга (scraping) или любым другим способом использовать материалы сайта без явного письменного согласия правообладателя.</p>
+
+        <h2>3. Запрет на обучение AI/нейросетей</h2>
+        <p>Прямо запрещается использование контента сайта для обучения любых моделей машинного обучения, искусственного интеллекта, нейронных сетей (включая ChatGPT, Gemini, Claude, Midjourney, DALL-E, Stable Diffusion и любые аналоги) любыми способами, включая автоматический сбор данных (crawling, scraping).</p>
+
+        <h2>4. Юрисдикция и применимое право</h2>
+        <p>Все споры, связанные с использованием сайта, рассматриваются в судах Республики Кипр. К данным Условиям применяется право Республики Кипр и Европейского Союза. Пользователь соглашается, что использование сайта из любой точки мира означает согласие с данной юрисдикцией.</p>
+
+        <h2>5. Изменения</h2>
+        <p>Владелец сайта оставляет за собой право изменять данные Условия без предварительного уведомления. Актуальная версия всегда доступна по этому адресу.</p>
+        <p><em>Дата последнего обновления: 16 мая 2026 г.</em></p>
+    </div>
+
+    <!-- ENGLISH -->
+    <div id="en-content" class="lang-content">
+        <h1>Terms of Use</h1>
+        <p><strong>Governed by the laws of the Republic of Cyprus and the European Union</strong></p>
+        <p>Owner: <strong>Andriy Gavrylenko</strong><br>
+        Contact: <a href="mailto:gavrosh2007@gmail.com">gavrosh2007@gmail.com</a></p>
+
+        <h2>1. Copyright</h2>
+        <p>All content (texts, images, design, code, layout solutions, drawings) is the intellectual property of the site owner and is protected by Cyprus Copyright Law (Cap. 59) and EU Directive 2001/29/EC.</p>
+
+        <h2>2. Prohibition of Copying and Scraping</h2>
+        <p>You may not copy, reproduce, distribute, publicly display, upload to AI models, use for scraping, or otherwise use any materials from this site without explicit written permission.</p>
+
+        <h2>3. Prohibition of AI/Neural Network Training</h2>
+        <p>Use of site content for training any machine learning models, artificial intelligence, or neural networks (including ChatGPT, Gemini, Claude, Midjourney, DALL-E, Stable Diffusion, and any similar) is strictly prohibited by any means, including automated crawling or scraping.</p>
+
+        <h2>4. Jurisdiction and Governing Law</h2>
+        <p>Any disputes arising from the use of this site shall be settled in the courts of the Republic of Cyprus. These Terms are governed by Cyprus and EU law. By using this site from any location worldwide, you agree to this jurisdiction.</p>
+
+        <h2>5. Changes</h2>
+        <p>The site owner reserves the right to modify these Terms without prior notice. The current version is always available at this address.</p>
+        <p><em>Last updated: May 16, 2026</em></p>
+    </div>
+
+    <!-- FOOTER с переключаемыми текстами -->
+    <footer>
+        <div id="footer-ru" style="display: block;">
+            <a href="index.html">← На главную</a> |
+            <a href="privacy.html">Политика конфиденциальности</a> |
+            <a href="terms.html">Условия использования</a> |
+            <a href="robots.txt" target="_blank">robots.txt</a> |
+            <a href="sitemap.xml" target="_blank">sitemap.xml</a> |
+            <a href="humans.txt" target="_blank">humans.txt</a>
+        </div>
+        <div id="footer-en" style="display: none;">
+            <a href="index.html">← Back to home</a> |
+            <a href="privacy.html">Privacy Policy</a> |
+            <a href="terms.html">Terms of Use</a> |
+            <a href="robots.txt" target="_blank">robots.txt</a> |
+            <a href="sitemap.xml" target="_blank">sitemap.xml</a> |
+            <a href="humans.txt" target="_blank">humans.txt</a>
+        </div>
+        <div style="margin-top: 1rem; font-size: 0.7rem;">© 2025 HM&SR — All rights reserved</div>
+    </footer>
+</div>
+
+<script>
+    function setLanguage(lang) {
+        document.getElementById('ru-content').classList.toggle('active', lang === 'ru');
+        document.getElementById('en-content').classList.toggle('active', lang === 'en');
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+        document.getElementById('footer-ru').style.display = (lang === 'ru') ? 'block' : 'none';
+        document.getElementById('footer-en').style.display = (lang === 'en') ? 'block' : 'none';
+    }
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+    });
+    setLanguage('ru');
+</script>
+</body>
+</html>
