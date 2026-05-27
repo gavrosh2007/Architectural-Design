@@ -1,8 +1,13 @@
-# Запрет для всех обычных ботов
-User-agent: *
-Disallow: /cgi-bin/
+# ============================================================
+# ЖЕСТКИЙ ЗАПРЕТ ДЛЯ ВСЕХ БОТОВ, ПАРСЕРОВ И AI-СИСТЕМ
+# Любое автоматическое извлечение данных ЗАПРЕЩЕНО
+# ============================================================
 
-# ========== БЛОКИРОВКА AI-БОТОВ (ЗАЩИТА ОТ ОБУЧЕНИЯ НЕЙРОСЕТЕЙ) ==========
+User-agent: *
+Disallow: /
+Crawl-delay: 99999
+
+# ========== БЛОКИРОВКА ВСЕХ ИЗВЕСТНЫХ AI-БОТОВ ==========
 User-agent: GPTBot
 Disallow: /
 
@@ -35,4 +40,90 @@ Disallow: /
 
 User-agent: Diffbot
 Disallow: /
-# ===========================================================================
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: Zoominfobot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Cohere-AI
+Disallow: /
+
+User-agent: MistralAI
+Disallow: /
+
+User-agent: DeepSeekBot
+Disallow: /
+
+User-agent: GrokBot
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: FacebookExternalHit
+Disallow: /
+
+User-agent: Twitterbot
+Disallow: /
+
+User-agent: LinkedInBot
+Disallow: /
+
+# ========== ЗАПРЕТ НА ПАРСИНГ И АВТОМАТИЧЕСКИЙ СБОР ==========
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: Baiduspider
+Disallow: /
+
+User-agent: YandexBot
+Disallow: /
+
+User-agent: YandexAccessibilityBot
+Disallow: /
+
+User-agent: YandexMobileBot
+Disallow: /
+
+User-agent: YandexNews
+Disallow: /
+
+User-agent: YandexImageResizer
+Disallow: /
+
+User-agent: YandexVideoParser
+Disallow: /
+
+User-agent: YandexMetrika
+Disallow: /
+
+# ============================================================
+# ПРИМЕЧАНИЕ: Нарушители будут преследоваться по закону
+# См. terms.html для информации о санкциях (до €20 млн штрафа)
+# ============================================================
