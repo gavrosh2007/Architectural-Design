@@ -3,52 +3,28 @@
     {
       "source": "/sw.js",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        },
-        {
-          "key": "Content-Type",
-          "value": "application/javascript"
-        }
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Content-Type", "value": "application/javascript" }
       ]
     },
     {
       "source": "/manifest.json",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        },
-        {
-          "key": "Content-Type",
-          "value": "application/json"
-        }
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Content-Type", "value": "application/json" }
       ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "index, follow"
-        },
+        { "key": "X-Robots-Tag", "value": "index, follow" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://nowpayments.io https://api.nowpayments.io; style-src 'self' 'unsafe-inline'; img-src * data:; media-src *; connect-src 'self' https://api.nowpayments.io;"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://nowpayments.io https://api.nowpayments.io https://embed.typeform.com https://cdn.typeform.com https://vercel.live https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://embed.typeform.com; font-src 'self' https://fonts.gstatic.com data:; img-src * data: blob:; media-src * blob:; connect-src 'self' https://api.nowpayments.io https://api.typeform.com https://vercel.live; frame-src *; worker-src 'self' blob:; manifest-src 'self';"
         },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        }
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     }
   ]
